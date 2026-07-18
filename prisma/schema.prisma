@@ -1,0 +1,155 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resume            Resume[]
+  studentProfile    StudentProfile?
+  applications      Application[]
+  recommendationScores RecommendationScore[]
+  prepCalendarEvents PrepCalendarEvent[]
+  userSubmittedPostings UserSubmittedPosting[]
+
+  @@map("users")
+}
+
+model Resume {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  filePath  String
+  uploadedAt DateTime @default(now())
+  isActive  Boolean  @default(false)
+  extractedData Json
+
+  studentProfile StudentProfile?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("resumes")
+}
+
+model StudentProfile {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeResumeId      String?  @unique
+  activeResume        Resume?  @relation(fields: [activeResumeId], references: [id])
+  interests           String[]
+  customInterests     String[]
+  skills              String[]
+  availableHoursPerWeek Int    @default(5)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("student_profiles")
+}
+
+model Application {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company         String
+  role            String
+  description     String?
+  source          String   @default("manual")
+  status          String   @default("applied")
+  appliedDate     DateTime @default(now())
+  interviewDates  DateTime[]
+  interviewNotes  String?
+  offerDetails    Json?
+  personalNotes   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  prepCalendarEvents PrepCalendarEvent[]
+
+  @@map("applications")
+}
+
+model InternshipPosting {
+  id              String   @id @default(cuid())
+  company         String
+  roleTitle       String
+  description     String
+  requiredSkills  String[]
+  location        String?
+  salaryRange     Json?
+  duration        String?
+  applicationDeadline DateTime?
+  originalLinks   String[]
+  sourceBoards    String[]
+  postedDate      DateTime
+  scrapedAt       DateTime @default(now())
+  isArchived      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  recommendationScores RecommendationScore[]
+
+  @@map("internship_postings")
+}
+
+model RecommendationScore {
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postingId           String
+  posting             InternshipPosting @relation(fields: [postingId], references: [id], onDelete: Cascade)
+  skillMatchScore     Float
+  experienceScore     Float
+  projectAlignmentScore Float
+  educationScore      Float
+  finalScore          Float
+  category            String
+  reason              String
+  calculatedAt        DateTime @default(now())
+
+  @@unique([userId, postingId])
+  @@map("recommendation_scores")
+}
+
+model PrepCalendarEvent {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applicationId   String?
+  application     Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  eventType       String
+  title           String
+  description     String?
+  dueDate         DateTime
+  estimatedHours  Float
+  isCompleted     Boolean  @default(false)
+  source          String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("prep_calendar_events")
+}
+
+model UserSubmittedPosting {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company         String
+  roleTitle       String
+  description     String
+  link            String
+  submittedAt     DateTime @default(now())
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@map("user_submitted_postings")
+}
