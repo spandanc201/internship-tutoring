@@ -11,6 +11,8 @@ interface PrepCalendarEvent {
   estimatedHours: number
   eventType: string
   isCompleted: boolean
+  isSnoozed: boolean
+  snoozeUntil?: string | Date | null
   source: string
   createdAt: string | Date
   updatedAt: string | Date
@@ -64,6 +66,14 @@ function getEventBorderColor(eventType: string): string {
   return 'border-gray-300'
 }
 
+// Helper to check if event is snoozed
+function isEventSnoozed(event: PrepCalendarEvent): boolean {
+  if (!event.isSnoozed || !event.snoozeUntil) {
+    return false
+  }
+  return new Date(event.snoozeUntil) > new Date()
+}
+
 // Monthly View Component
 function MonthlyView({
   events,
@@ -88,9 +98,13 @@ function MonthlyView({
   const daysInMonth = lastDay.getDate()
   const startingDayOfWeek = firstDay.getDay()
 
-  // Create event map for quick lookup
+  // Create event map for quick lookup (excluding snoozed events)
   const eventsByDate: Record<string, PrepCalendarEvent[]> = {}
   events.forEach((event) => {
+    // Skip snoozed events that haven't been unsnoozed yet
+    if (isEventSnoozed(event)) {
+      return
+    }
     const eventDate = new Date(event.dueDate)
     const dateKey = eventDate.toISOString().split('T')[0]
     if (!eventsByDate[dateKey]) {
@@ -207,9 +221,13 @@ function WeeklyView({
     weekDays.push(d)
   }
 
-  // Group events by date
+  // Group events by date (excluding snoozed events)
   const eventsByDate: Record<string, PrepCalendarEvent[]> = {}
   events.forEach((event) => {
+    // Skip snoozed events that haven't been unsnoozed yet
+    if (isEventSnoozed(event)) {
+      return
+    }
     const eventDate = new Date(event.dueDate)
     eventDate.setHours(0, 0, 0, 0)
     const dateKey = eventDate.toISOString().split('T')[0]
@@ -326,8 +344,9 @@ function ListView({
   const filteredAndSorted = useMemo(() => {
     let filtered = events.filter(
       (e) =>
-        e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        e.description?.toLowerCase().includes(searchTerm.toLowerCase())
+        !isEventSnoozed(e) &&
+        (e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        e.description?.toLowerCase().includes(searchTerm.toLowerCase()))
     )
 
     if (sortBy === 'date') {

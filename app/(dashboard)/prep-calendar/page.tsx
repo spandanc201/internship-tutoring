@@ -13,6 +13,8 @@ interface PrepCalendarEvent {
   estimatedHours: number
   eventType: string
   isCompleted: boolean
+  isSnoozed: boolean
+  snoozeUntil?: string | Date | null
   source: string
   createdAt: string | Date
   updatedAt: string | Date
@@ -25,6 +27,7 @@ interface EventDetailsModalProps {
   onEdit: (event: PrepCalendarEvent) => void
   onDelete: (eventId: string) => Promise<void>
   onMarkComplete: (eventId: string, isCompleted: boolean) => Promise<void>
+  onSnooze: (eventId: string, snoozeUntil: Date) => Promise<void>
 }
 
 // Helper function to format date
@@ -47,6 +50,14 @@ function formatDateFull(date: Date | string): string {
   })
 }
 
+// Helper to check if event is snoozed
+function isEventSnoozed(event: PrepCalendarEvent): boolean {
+  if (!event.isSnoozed || !event.snoozeUntil) {
+    return false
+  }
+  return new Date(event.snoozeUntil) > new Date()
+}
+
 // Event Details Modal Component
 function EventDetailsModal({
   event,
@@ -54,9 +65,12 @@ function EventDetailsModal({
   onEdit,
   onDelete,
   onMarkComplete,
+  onSnooze,
 }: EventDetailsModalProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showSnoozeOptions, setShowSnoozeOptions] = useState(false)
+  const [isSnoozing, setIsSnoozing] = useState(false)
 
   if (!event) return null
 
@@ -68,6 +82,20 @@ function EventDetailsModal({
     } catch (error) {
       console.error('Failed to delete event:', error)
       setIsDeleting(false)
+    }
+  }
+
+  const handleSnooze = async (hours: number) => {
+    setIsSnoozing(true)
+    try {
+      const snoozeUntil = new Date()
+      snoozeUntil.setHours(snoozeUntil.getHours() + hours)
+      await onSnooze(event.id, snoozeUntil)
+      setShowSnoozeOptions(false)
+      onClose()
+    } catch (error) {
+      console.error('Failed to snooze event:', error)
+      setIsSnoozing(false)
     }
   }
 
@@ -150,6 +178,47 @@ function EventDetailsModal({
           >
             {event.isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
           </button>
+
+          {showSnoozeOptions ? (
+            <div className="bg-yellow-50 border border-yellow-200 rounded p-3 space-y-2">
+              <p className="text-sm text-yellow-700 font-medium mb-2">Snooze for:</p>
+              <button
+                onClick={() => handleSnooze(1)}
+                disabled={isSnoozing}
+                className="w-full px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm font-medium disabled:opacity-50"
+              >
+                1 Hour
+              </button>
+              <button
+                onClick={() => handleSnooze(4)}
+                disabled={isSnoozing}
+                className="w-full px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm font-medium disabled:opacity-50"
+              >
+                4 Hours
+              </button>
+              <button
+                onClick={() => handleSnooze(24)}
+                disabled={isSnoozing}
+                className="w-full px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm font-medium disabled:opacity-50"
+              >
+                1 Day
+              </button>
+              <button
+                onClick={() => setShowSnoozeOptions(false)}
+                className="w-full px-3 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm font-medium"
+                disabled={isSnoozing}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowSnoozeOptions(true)}
+              className="w-full px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 font-medium text-sm"
+            >
+              Snooze
+            </button>
+          )}
 
           {event.source === 'student_created' && (
             <>
@@ -255,8 +324,10 @@ export default function PrepCalendarPage() {
     fetchEvents()
   }, [filterType])
 
-  // Filter events for display
+  // Filter events for display (excluding snoozed events)
   const filteredEvents = events.filter((e) => {
+    // Skip snoozed events that haven't been unsnoozed yet
+    if (isEventSnoozed(e)) return false
     if (filterType === 'all') return true
     return e.eventType === filterType
   })
@@ -290,6 +361,36 @@ export default function PrepCalendarPage() {
     } catch (err) {
       console.error('Failed to mark complete:', err)
       setError('Failed to update event status')
+    }
+  }
+
+  // Handle snooze event
+  const handleSnooze = async (eventId: string, snoozeUntil: Date) => {
+    try {
+      const response = await fetch(`/api/calendar/${eventId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          isSnoozed: true,
+          snoozeUntil: snoozeUntil.toISOString(),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to snooze event')
+      }
+
+      // Update local state - remove the snoozed event from view
+      setEvents((prev) =>
+        prev.filter((e) => e.id !== eventId)
+      )
+
+      setSelectedEvent(null)
+    } catch (err) {
+      console.error('Failed to snooze event:', err)
+      setError('Failed to snooze event')
     }
   }
 
@@ -573,6 +674,7 @@ export default function PrepCalendarPage() {
         onEdit={handleEditEvent}
         onDelete={handleDeleteEvent}
         onMarkComplete={handleMarkComplete}
+        onSnooze={handleSnooze}
       />
 
       {/* Event Form Modal */}

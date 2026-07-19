@@ -18,10 +18,10 @@
 - [x] Task 7: Job Scraping Infrastructure (e27f238) ✓ DONE
 - [x] Task 8: Job Posting Database (def223e) ✓ DONE
 - [x] Task 9: Recommendation Scoring Engine (51d14b5) ✓ DONE
-- [ ] Task 10: Find Internships UI (ready to start)
-- [ ] Task 11: Prep Calendar Generation (ready to start)
-- [ ] Task 12: Prep Calendar UI (ready to start)
-- [ ] Task 13: Testing & Deployment (ready to start)
+- [x] Task 10: Find Internships UI (550f2ad) ✅ APPROVED
+- [x] Task 11: Prep Calendar Generation (1b4a7e9) ✅ APPROVED
+- [ ] Task 12: Prep Calendar UI (implementing...)
+- [ ] Task 13: Testing & Deployment (ready after Task 12)
 
 ---
 

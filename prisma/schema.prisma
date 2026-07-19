@@ -44,7 +44,7 @@ model StudentProfile {
   id                  String   @id @default(cuid())
   userId              String   @unique
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  activeResumeId      String?  @unique
+  activeResumeId      String?
   activeResume        Resume?  @relation(fields: [activeResumeId], references: [id])
   interests           String[]
   customInterests     String[]
@@ -132,6 +132,8 @@ model PrepCalendarEvent {
   dueDate         DateTime
   estimatedHours  Float
   isCompleted     Boolean  @default(false)
+  isSnoozed       Boolean  @default(false)
+  snoozeUntil     DateTime?
   source          String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

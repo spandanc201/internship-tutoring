@@ -98,6 +98,8 @@ export async function PUT(
       isCompleted,
       eventType,
       category,
+      isSnoozed,
+      snoozeUntil,
     } = body
 
     // Build update data (only include provided fields)
@@ -116,6 +118,8 @@ export async function PUT(
     }
     if (isCompleted !== undefined) updateData.isCompleted = isCompleted
     if (eventType !== undefined) updateData.eventType = eventType
+    if (isSnoozed !== undefined) updateData.isSnoozed = isSnoozed
+    if (snoozeUntil !== undefined) updateData.snoozeUntil = snoozeUntil ? new Date(snoozeUntil) : null
 
     // Update event
     const updatedEvent = await prisma.prepCalendarEvent.update({
