@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const resumeData = studentProfile.activeResume.extractedData as ExtractedResumeData
+    const resumeData = studentProfile.activeResume.extractedData as unknown as ExtractedResumeData
 
     // Fetch all non-archived postings
     const postings = await prisma.internshipPosting.findMany({
