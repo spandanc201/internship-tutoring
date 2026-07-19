@@ -94,26 +94,27 @@ async function scrapeJobs(): Promise<void> {
         updatedCount++;
       } else {
         // Create new posting
-        const salaryRange = posting.salary
-          ? { range: posting.salary }
-          : null;
+        const createData: any = {
+          company: posting.company,
+          roleTitle: posting.roleTitle,
+          description: posting.description,
+          requiredSkills: posting.skills,
+          location: posting.location,
+          applicationDeadline: posting.deadline
+            ? new Date(posting.deadline)
+            : null,
+          originalLinks: links,
+          sourceBoards: boards,
+          postedDate: new Date(),
+          scrapedAt: new Date(),
+        };
+
+        if (posting.salary) {
+          createData.salaryRange = { range: posting.salary };
+        }
 
         await prisma.internshipPosting.create({
-          data: {
-            company: posting.company,
-            roleTitle: posting.roleTitle,
-            description: posting.description,
-            requiredSkills: posting.skills,
-            location: posting.location,
-            salaryRange,
-            applicationDeadline: posting.deadline
-              ? new Date(posting.deadline)
-              : null,
-            originalLinks: links,
-            sourceBoards: boards,
-            postedDate: new Date(),
-            scrapedAt: new Date(),
-          },
+          data: createData,
         });
         createdCount++;
       }
