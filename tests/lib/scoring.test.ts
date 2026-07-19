@@ -57,8 +57,10 @@ describe('Scoring Algorithm', () => {
   });
 
   test('should classify stretch for score 50-74', () => {
+    // 3/4 skills (75 * 0.5), 1/2 years experience (50 * 0.2), no projects (0),
+    // base education (50 * 0.15) = 55, which falls in the stretch band
     const resume = {
-      skills: ['Java', 'PostgreSQL'],
+      skills: ['Java', 'PostgreSQL', 'Docker'],
       priorInternships: [{ company: 'C1', title: 'Intern', duration: '3m', skills: [] }],
       projects: [],
     };

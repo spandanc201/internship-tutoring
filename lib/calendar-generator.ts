@@ -378,9 +378,9 @@ export function createGeneralPrepCalendar(): GeneratedTask[] {
 
   let taskId = 1
   for (const monthTheme of GENERAL_PREP_THEMES) {
+    // Schedule relative to today so no task is due in the past
     const monthStart = new Date(today)
     monthStart.setMonth(monthStart.getMonth() + (monthTheme.month - 1))
-    monthStart.setDate(1)
 
     // Create 4 tasks for this month (weekly)
     for (let week = 0; week < 4; week++) {

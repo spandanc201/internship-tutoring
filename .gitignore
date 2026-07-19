@@ -43,3 +43,9 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+.env*
+
+# local tooling and uploads
+.agents/
+skills-lock.json
+/public/resumes/

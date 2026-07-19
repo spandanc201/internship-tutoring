@@ -13,7 +13,6 @@
     "scrape": "ts-node scripts/scrape-jobs.ts"
   },
   "dependencies": {
-    "@prisma/cli": "^3.0.0-beta.28",
     "@prisma/client": "^5.20.0",
     "axios": "^1.7.7",
     "bcryptjs": "^3.0.3",

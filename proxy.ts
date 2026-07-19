@@ -1,8 +1,7 @@
-import { getTokenFromCookie } from './auth'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  const token = await getTokenFromCookie()
+export function proxy(request: NextRequest) {
+  const token = request.cookies.get('auth_token')?.value
 
   if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url))
