@@ -110,7 +110,7 @@ export async function scrapeLinkedInInternships(
       },
     ];
 
-    return mockPostings.map((posting) => ({
+    return mockPostings.map((posting: typeof mockPostings[0]) => ({
       ...posting,
       skills: extractSkills(posting.description),
       sourceBoard: 'LinkedIn',

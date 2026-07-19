@@ -71,10 +71,10 @@ export async function getPostings(
   if (skills) {
     const skillsArray = Array.isArray(skills)
       ? skills
-      : skills.split(',').map((s) => s.trim())
+      : skills.split(',').map((s: string) => s.trim())
 
     // Use OR condition to match any skill
-    where.OR = skillsArray.map((skill) => ({
+    where.OR = skillsArray.map((skill: string) => ({
       requiredSkills: {
         has: skill,
       },
@@ -110,7 +110,7 @@ export async function getPostings(
 
   // Format response
   return {
-    postings: postings.map((p) => ({
+    postings: postings.map((p: typeof postings[0]) => ({
       id: p.id,
       company: p.company,
       roleTitle: p.roleTitle,
