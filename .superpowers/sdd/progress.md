@@ -20,8 +20,8 @@
 - [x] Task 9: Recommendation Scoring Engine (51d14b5) ✓ DONE
 - [x] Task 10: Find Internships UI (550f2ad) ✅ APPROVED
 - [x] Task 11: Prep Calendar Generation (1b4a7e9) ✅ APPROVED
-- [ ] Task 12: Prep Calendar UI (implementing...)
-- [ ] Task 13: Testing & Deployment (ready after Task 12)
+- [x] Task 12: Prep Calendar UI (9737561 + snooze fix) ✅ APPROVED
+- [ ] Task 13: Testing & Deployment (implementing...)
 
 ---
 
