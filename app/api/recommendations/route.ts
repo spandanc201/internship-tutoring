@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Score each posting
-    const scoredPostings: RecommendationItem[] = postings.map(posting => {
+    const scoredPostings: RecommendationItem[] = postings.map((posting: typeof postings[0]) => {
       const scoreResult = scoreStudentAgainstPosting(resumeData, {
         description: posting.description,
         requiredSkills: posting.requiredSkills,
