@@ -19,10 +19,12 @@
     "cheerio": "^1.0.0-rc.12",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.25.0",
+    "mammoth": "^1.12.0",
     "next": "16.2.10",
     "prisma": "^5.20.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "unpdf": "^1.6.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

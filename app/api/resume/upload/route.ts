@@ -38,14 +38,23 @@ export async function POST(req: NextRequest) {
     // Parse resume
     const extractedData = await parseResumeWithAPI(buffer, file.name)
 
-    // Save file to disk
-    const resumeDir = join(process.cwd(), 'public', 'resumes', payload.userId)
-    await mkdir(resumeDir, { recursive: true })
+    // Save file to disk when possible. The database record is the source of
+    // truth; on serverless hosts (e.g. Vercel) the filesystem is read-only,
+    // so a failed write must not fail the upload.
     const fileName = `${Date.now()}-${file.name}`
-    const filePath = join(resumeDir, fileName)
-    await writeFile(filePath, buffer)
+    try {
+      const resumeDir = join(process.cwd(), 'public', 'resumes', payload.userId)
+      await mkdir(resumeDir, { recursive: true })
+      await writeFile(join(resumeDir, fileName), buffer)
+    } catch (error) {
+      console.warn('Skipping resume file persistence (read-only filesystem?):', error)
+    }
 
-    // Store in database
+    // Store in database as the new active version
+    await prisma.resume.updateMany({
+      where: { userId: payload.userId, isActive: true },
+      data: { isActive: false },
+    })
     const resume = await prisma.resume.create({
       data: {
         userId: payload.userId,

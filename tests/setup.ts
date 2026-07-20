@@ -8,6 +8,7 @@ jest.mock('@/lib/db', () => ({
       findUnique: jest.fn(),
       findMany: jest.fn(),
       update: jest.fn(),
+      updateMany: jest.fn(),
       delete: jest.fn(),
     },
     studentProfile: {
