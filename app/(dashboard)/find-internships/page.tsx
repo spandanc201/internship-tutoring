@@ -157,9 +157,9 @@ export default function FindInternshipsPage() {
   }
 
   const counts: Record<TabType, number> = {
-    good_fit: data?.summary.goodFitCount ?? 0,
-    stretch: data?.summary.stretchCount ?? 0,
-    long_shot: data?.summary.longShotCount ?? 0,
+    good_fit: data?.summary?.goodFitCount ?? data?.goodFit?.length ?? 0,
+    stretch: data?.summary?.stretchCount ?? data?.stretch?.length ?? 0,
+    long_shot: data?.summary?.longShotCount ?? data?.longShot?.length ?? 0,
   }
 
   return (
@@ -287,7 +287,9 @@ export default function FindInternshipsPage() {
               }}
             >
               <p className="text-muted" style={{ margin: 0 }}>
-                No roles match your filters in this tier. Try widening the filters.
+                {(data?.summary.total ?? 0) === 0
+                  ? 'No internship postings are available yet. Check back soon — recommendations will appear once roles are listed.'
+                  : 'No roles match your filters in this tier. Try widening the filters.'}
               </p>
             </div>
           ) : (

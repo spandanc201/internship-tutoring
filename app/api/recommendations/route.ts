@@ -67,6 +67,12 @@ export async function GET(request: NextRequest) {
         goodFit: [],
         stretch: [],
         longShot: [],
+        summary: {
+          total: 0,
+          goodFitCount: 0,
+          stretchCount: 0,
+          longShotCount: 0,
+        },
       })
     }
 
