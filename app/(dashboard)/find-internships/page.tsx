@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import RecommendationFilters, { FilterState } from '@/components/RecommendationFilters'
-import RecommendationList from '@/components/RecommendationList'
-import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import { MapPin, Banknote, Clock, Plus } from 'lucide-react'
+import { useFlash } from '@/components/fieldwork/Flash'
+import { fmtDate, relDate, salaryText } from '@/lib/format'
 
 interface Recommendation {
   id: string
@@ -15,8 +15,9 @@ interface Recommendation {
   location?: string
   salaryRange?: any
   requiredSkills: string[]
-  postedDate: Date | string
-  applicationDeadline?: Date | string
+  postedDate: string
+  applicationDeadline?: string
+  sourceBoards?: string[]
 }
 
 interface RecommendationsResponse {
@@ -33,323 +34,413 @@ interface RecommendationsResponse {
 
 type TabType = 'good_fit' | 'stretch' | 'long_shot'
 
-const DEFAULT_FILTERS: FilterState = {
-  location: '',
-  company: '',
-  skills: [],
-  sortBy: 'score',
-}
+const TABS: { id: TabType; label: string; pillStyle: React.CSSProperties }[] = [
+  {
+    id: 'good_fit',
+    label: 'Good Fit',
+    pillStyle: { background: 'var(--color-accent-100)', color: 'var(--color-accent-800)' },
+  },
+  {
+    id: 'stretch',
+    label: 'Stretch',
+    pillStyle: { background: 'var(--color-neutral-100)', color: 'var(--color-neutral-800)' },
+  },
+  {
+    id: 'long_shot',
+    label: 'Long Shot',
+    pillStyle: { border: '1px solid var(--color-divider)', padding: '1px 7px' },
+  },
+]
 
-function filterAndSortRecommendations(
-  recommendations: Recommendation[],
-  filters: FilterState
-): Recommendation[] {
-  // Apply filters
-  let filtered = recommendations.filter((rec) => {
-    const locationMatch =
-      !filters.location ||
-      (rec.location &&
-        rec.location
-          .toLowerCase()
-          .includes(filters.location.toLowerCase()))
-
-    const companyMatch =
-      !filters.company ||
-      rec.company.toLowerCase().includes(filters.company.toLowerCase())
-
-    const skillsMatch =
-      filters.skills.length === 0 ||
-      filters.skills.some((skill) =>
-        rec.requiredSkills.some(
-          (s) => s.toLowerCase() === skill.toLowerCase()
-        )
-      )
-
-    return locationMatch && companyMatch && skillsMatch
-  })
-
-  // Apply sort
-  return filtered.sort((a, b) => {
-    switch (filters.sortBy) {
-      case 'date':
-        return (
-          new Date(b.postedDate).getTime() -
-          new Date(a.postedDate).getTime()
-        )
-      case 'salary':
-        const aSalary = a.salaryRange?.max || a.salaryRange?.min || 0
-        const bSalary = b.salaryRange?.max || b.salaryRange?.min || 0
-        return bSalary - aSalary
-      case 'company':
-        return a.company.localeCompare(b.company)
-      case 'score':
-      default:
-        return b.score - a.score
-    }
-  })
-}
-
-function getAllAvailableFilters(data: RecommendationsResponse) {
-  const allRecs = [...data.goodFit, ...data.stretch, ...data.longShot]
-
-  const locations = Array.from(
-    new Set(allRecs.map((r) => r.location).filter(Boolean))
-  ).sort()
-
-  const companies = Array.from(new Set(allRecs.map((r) => r.company))).sort()
-
-  const skills = Array.from(
-    new Set(allRecs.flatMap((r) => r.requiredSkills))
-  ).sort()
-
-  return { locations, companies, skills }
+function scoreColor(score: number): string {
+  if (score >= 75) return 'var(--color-accent-700)'
+  if (score >= 50) return 'var(--color-neutral-700)'
+  return 'var(--color-neutral-500)'
 }
 
 export default function FindInternshipsPage() {
-  const router = useRouter()
+  const flash = useFlash()
   const [data, setData] = useState<RecommendationsResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS)
-  const [activeTab, setActiveTab] = useState<TabType>('good_fit')
-  const [loggingApplicationId, setLoggingApplicationId] = useState<
-    string | null
-  >(null)
+  const [tab, setTab] = useState<TabType>('good_fit')
+  const [filters, setFilters] = useState({ location: '', skill: '', company: '', sort: 'score' })
+  const [expanded, setExpanded] = useState<string | null>(null)
+  const [loggedKeys, setLoggedKeys] = useState<Set<string>>(new Set())
 
-  // Fetch recommendations
-  const fetchRecommendations = async () => {
-    setIsLoading(true)
-    setError(null)
-    try {
-      const response = await fetch('/api/recommendations')
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Please log in to view recommendations')
-        }
-        if (response.status === 404) {
-          throw new Error('No active resume found. Please upload a resume first.')
-        }
-        throw new Error('Failed to load recommendations')
-      }
-
-      const json = await response.json()
-      setData(json)
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An error occurred'
-      setError(errorMessage)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Load recommendations on mount
   useEffect(() => {
-    fetchRecommendations()
+    async function load() {
+      setIsLoading(true)
+      setError(null)
+      try {
+        const res = await fetch('/api/recommendations')
+        if (!res.ok) {
+          if (res.status === 404) throw new Error('No active résumé found. Upload one on the Résumé page first.')
+          if (res.status === 401) throw new Error('Please sign in to view recommendations.')
+          throw new Error('Failed to load recommendations.')
+        }
+        setData(await res.json())
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    load()
+    fetch('/api/applications?limit=100')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((d) =>
+        setLoggedKeys(new Set((d?.applications ?? []).map((a: any) => `${a.company}|${a.role}`)))
+      )
+      .catch(() => {})
   }, [])
 
-  // Handle log application
-  const handleLogApplication = async (
-    id: string,
-    company: string,
-    roleTitle: string
-  ) => {
-    setLoggingApplicationId(id)
+  const allRecs = useMemo(
+    () => (data ? [...data.goodFit, ...data.stretch, ...data.longShot] : []),
+    [data]
+  )
+  const locationOptions = useMemo(
+    () => Array.from(new Set(allRecs.map((r) => r.location).filter(Boolean))).sort() as string[],
+    [allRecs]
+  )
+  const skillOptions = useMemo(
+    () => Array.from(new Set(allRecs.flatMap((r) => r.requiredSkills))).sort(),
+    [allRecs]
+  )
+
+  const tierList: Recommendation[] = !data
+    ? []
+    : tab === 'good_fit'
+      ? data.goodFit
+      : tab === 'stretch'
+        ? data.stretch
+        : data.longShot
+
+  const recs = tierList
+    .filter(
+      (r) =>
+        (!filters.location || r.location === filters.location) &&
+        (!filters.skill || r.requiredSkills.includes(filters.skill)) &&
+        (!filters.company || r.company.toLowerCase().includes(filters.company.toLowerCase()))
+    )
+    .sort((a, b) => {
+      if (filters.sort === 'date')
+        return new Date(b.postedDate).getTime() - new Date(a.postedDate).getTime()
+      if (filters.sort === 'salary')
+        return (b.salaryRange?.max || 0) - (a.salaryRange?.max || 0)
+      if (filters.sort === 'company') return a.company.localeCompare(b.company)
+      return b.score - a.score
+    })
+
+  async function logApplication(rec: Recommendation) {
+    const key = `${rec.company}|${rec.roleTitle}`
+    if (loggedKeys.has(key)) {
+      flash('Already in your tracker')
+      return
+    }
     try {
-      const response = await fetch('/api/applications', {
+      const res = await fetch('/api/applications', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          company,
-          role: roleTitle,
+          company: rec.company,
+          role: rec.roleTitle,
           source: 'recommendations',
         }),
       })
-
-      if (!response.ok) {
-        throw new Error('Failed to log application')
-      }
-
-      // Show success message and navigate to applications
-      alert('Application logged successfully!')
-      router.push('/applications')
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to log application'
-      alert(errorMessage)
-    } finally {
-      setLoggingApplicationId(null)
+      if (!res.ok) throw new Error()
+      setLoggedKeys((prev) => new Set(prev).add(key))
+      flash(`Logged ${rec.company} — ${rec.roleTitle}`)
+    } catch {
+      flash('Failed to log application')
     }
   }
 
-  // Get filtered recommendations for active tab
-  const getTabRecommendations = (): Recommendation[] => {
-    if (!data) return []
-
-    const tabData: Record<TabType, Recommendation[]> = {
-      good_fit: data.goodFit,
-      stretch: data.stretch,
-      long_shot: data.longShot,
-    }
-
-    return filterAndSortRecommendations(
-      tabData[activeTab],
-      filters
-    )
-  }
-
-  const filteredRecs = getTabRecommendations()
-  const availableFilters = data ? getAllAvailableFilters(data) : { locations: [], companies: [], skills: [] }
-
-  // Handle tab changes - reset to top
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  const counts: Record<TabType, number> = {
+    good_fit: data?.summary.goodFitCount ?? 0,
+    stretch: data?.summary.stretchCount ?? 0,
+    long_shot: data?.summary.longShotCount ?? 0,
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Find Internships
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Personalized recommendations based on your resume and skills
-          </p>
+    <div className="fw-fade" style={{ maxWidth: 1060, margin: '0 auto' }}>
+      <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.02em', margin: '0 0 4px' }}>
+        Find Internships
+      </h1>
+      <p className="text-muted" style={{ fontSize: 15, margin: '0 0 26px' }}>
+        Personalised recommendations, scored against your active résumé and interests.
+      </p>
+
+      {error ? (
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            border: '1px dashed var(--color-divider)',
+            borderRadius: 'var(--radius-md)',
+          }}
+        >
+          <p className="text-muted" style={{ margin: 0 }}>{error}</p>
         </div>
-
-        {/* Error State */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">{error}</p>
-              </div>
-              <button
-                onClick={fetchRecommendations}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-medium"
+      ) : (
+        <>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 14,
+              alignItems: 'flex-end',
+              padding: '16px 18px',
+              border: '1px solid var(--color-divider)',
+              borderRadius: 'var(--radius-md)',
+              marginBottom: 22,
+            }}
+          >
+            <div className="field" style={{ flex: 1, minWidth: 150, margin: 0 }}>
+              <label>Location</label>
+              <select
+                className="input"
+                value={filters.location}
+                onChange={(e) => setFilters({ ...filters, location: e.target.value })}
               >
-                Retry
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!error && (
-          <>
-            {/* Filters */}
-            <RecommendationFilters
-              onFilterChange={setFilters}
-              availableLocations={availableFilters.locations as any}
-              availableCompanies={availableFilters.companies as any}
-              availableSkills={availableFilters.skills as any}
-              initialFilters={filters}
-            />
-
-            {/* Tabs */}
-            <div className="bg-white rounded-t-lg border-b border-gray-200 mb-6">
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 p-4 sm:p-0">
-                {[
-                  {
-                    id: 'good_fit' as TabType,
-                    label: 'Good Fit',
-                    count: data?.summary.goodFitCount ?? 0,
-                    description: '75+ match',
-                  },
-                  {
-                    id: 'stretch' as TabType,
-                    label: 'Stretch',
-                    count: data?.summary.stretchCount ?? 0,
-                    description: '50-74 match',
-                  },
-                  {
-                    id: 'long_shot' as TabType,
-                    label: 'Long Shot',
-                    count: data?.summary.longShotCount ?? 0,
-                    description: '<50 match',
-                  },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => handleTabChange(tab.id)}
-                    className={`flex-1 sm:flex-initial px-6 py-4 font-medium border-b-2 transition ${
-                      activeTab === tab.id
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between sm:justify-start gap-2">
-                      <span>{tab.label}</span>
-                      <span className="text-xs bg-gray-100 px-2 py-1 rounded-full text-gray-700 font-semibold">
-                        {tab.count}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1 text-left">
-                      {tab.description}
-                    </div>
-                  </button>
+                <option value="">All locations</option>
+                {locationOptions.map((loc) => (
+                  <option key={loc} value={loc}>{loc}</option>
                 ))}
-              </div>
+              </select>
             </div>
-
-            {/* Content Area */}
-            <div className="mb-8">
-              <RecommendationList
-                recommendations={filteredRecs.map((rec) => ({
-                  ...rec,
-                }))}
-                isLoading={isLoading}
-                isEmpty={filteredRecs.length === 0}
-                emptyMessage={
-                  data && (data.goodFit.length + data.stretch.length + data.longShot.length) === 0
-                    ? 'No recommendations available. This might be because your resume data is still being processed.'
-                    : 'No recommendations match your filters. Try adjusting your search criteria.'
-                }
-                onLogApplication={handleLogApplication}
-                loggingApplicationId={loggingApplicationId}
+            <div className="field" style={{ flex: 1, minWidth: 150, margin: 0 }}>
+              <label>Skill</label>
+              <select
+                className="input"
+                value={filters.skill}
+                onChange={(e) => setFilters({ ...filters, skill: e.target.value })}
+              >
+                <option value="">Any skill</option>
+                {skillOptions.map((sk) => (
+                  <option key={sk} value={sk}>{sk}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field" style={{ flex: 1, minWidth: 150, margin: 0 }}>
+              <label>Company</label>
+              <input
+                className="input"
+                placeholder="Search company"
+                value={filters.company}
+                onChange={(e) => setFilters({ ...filters, company: e.target.value })}
               />
             </div>
+            <div className="field" style={{ flex: 1, minWidth: 150, margin: 0 }}>
+              <label>Sort by</label>
+              <select
+                className="input"
+                value={filters.sort}
+                onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
+              >
+                <option value="score">Match score</option>
+                <option value="date">Most recent</option>
+                <option value="salary">Salary</option>
+                <option value="company">Company</option>
+              </select>
+            </div>
+          </div>
 
-            {/* Summary */}
-            {data && !isLoading && (
-              <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Summary</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {data.summary.total}
+          <div
+            style={{
+              display: 'flex',
+              gap: 28,
+              borderBottom: '1px solid var(--color-divider)',
+              marginBottom: 24,
+            }}
+          >
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                className="tabbtn"
+                data-active={tab === t.id}
+                onClick={() => {
+                  setTab(t.id)
+                  setExpanded(null)
+                }}
+              >
+                {t.label}{' '}
+                <span
+                  className="tnum"
+                  style={{ fontSize: 11, padding: '2px 8px', borderRadius: 9, ...t.pillStyle }}
+                >
+                  {counts[t.id]}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {isLoading ? (
+            <p className="text-muted" style={{ fontSize: 14 }}>Scoring postings against your résumé…</p>
+          ) : recs.length === 0 ? (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '60px 20px',
+                border: '1px dashed var(--color-divider)',
+                borderRadius: 'var(--radius-md)',
+              }}
+            >
+              <p className="text-muted" style={{ margin: 0 }}>
+                No roles match your filters in this tier. Try widening the filters.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {recs.map((rec) => {
+                const logged = loggedKeys.has(`${rec.company}|${rec.roleTitle}`)
+                const isOpen = expanded === rec.id
+                return (
+                  <div
+                    key={rec.id}
+                    className="card elev-sm"
+                    style={{ background: 'var(--color-bg)', gap: 0, padding: 0, overflow: 'hidden' }}
+                  >
+                    <div style={{ padding: '20px 22px' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          gap: 20,
+                          alignItems: 'flex-start',
+                        }}
+                      >
+                        <div style={{ minWidth: 0 }}>
+                          <div
+                            style={{
+                              fontSize: 11,
+                              letterSpacing: '0.1em',
+                              textTransform: 'uppercase',
+                              color: 'color-mix(in srgb, var(--color-text) 55%, transparent)',
+                            }}
+                          >
+                            {rec.company}
+                            {rec.sourceBoards?.length ? ` · ${rec.sourceBoards[0]}` : ''}
+                          </div>
+                          <h3 style={{ fontSize: 23, fontWeight: 600, margin: '3px 0 0', letterSpacing: '-0.01em' }}>
+                            {rec.roleTitle}
+                          </h3>
+                        </div>
+                        <div style={{ flex: 'none', textAlign: 'right' }}>
+                          <div
+                            className="tnum"
+                            style={{
+                              fontFamily: 'var(--font-heading)',
+                              fontSize: 30,
+                              fontWeight: 600,
+                              lineHeight: 1,
+                              color: scoreColor(rec.score),
+                            }}
+                          >
+                            {Math.round(rec.score)}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 10,
+                              letterSpacing: '0.08em',
+                              textTransform: 'uppercase',
+                              color: 'color-mix(in srgb, var(--color-text) 50%, transparent)',
+                              marginTop: 2,
+                            }}
+                          >
+                            match
+                          </div>
+                        </div>
+                      </div>
+                      <p style={{ fontSize: 14, margin: '12px 0 14px', maxWidth: '62ch' }}>{rec.reason}</p>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 18,
+                          fontSize: 12.5,
+                          color: 'color-mix(in srgb, var(--color-text) 60%, transparent)',
+                          marginBottom: 14,
+                        }}
+                      >
+                        {rec.location && (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                            <MapPin size={14} strokeWidth={1.75} />
+                            {rec.location}
+                          </span>
+                        )}
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <Banknote size={14} strokeWidth={1.75} />
+                          {salaryText(rec.salaryRange)}
+                        </span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <Clock size={14} strokeWidth={1.75} />
+                          Posted {relDate(rec.postedDate)}
+                        </span>
+                        {rec.applicationDeadline && (
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              color: 'var(--color-accent-700)',
+                            }}
+                          >
+                            Deadline {fmtDate(rec.applicationDeadline)}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 16 }}>
+                        {rec.requiredSkills.map((sk) => (
+                          <span key={sk} className="tag tag-neutral">{sk}</span>
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', gap: 10 }}>
+                        <button
+                          className="btn btn-secondary"
+                          onClick={() => setExpanded(isOpen ? null : rec.id)}
+                        >
+                          {isOpen ? 'Hide posting' : 'View posting'}
+                        </button>
+                        <button className="btn btn-primary" onClick={() => logApplication(rec)}>
+                          {logged ? 'Logged ✓' : (
+                            <>
+                              <Plus size={15} strokeWidth={1.9} />
+                              Log application
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">Total Postings</div>
+                    {isOpen && (
+                      <div
+                        style={{
+                          background: 'var(--color-surface)',
+                          borderTop: '1px solid var(--color-divider)',
+                          padding: '18px 22px',
+                        }}
+                      >
+                        <h4 className="detail-head" style={{ fontSize: 13 }}>The posting</h4>
+                        <p
+                          style={{
+                            fontSize: 13.5,
+                            lineHeight: 1.65,
+                            margin: 0,
+                            maxWidth: '70ch',
+                            textAlign: 'justify',
+                          }}
+                        >
+                          {rec.description}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">
-                      {data.summary.goodFitCount}
-                    </div>
-                    <div className="text-sm text-gray-600">Good Fit</div>
-                  </div>
-                  <div className="bg-yellow-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-yellow-600">
-                      {data.summary.stretchCount}
-                    </div>
-                    <div className="text-sm text-gray-600">Stretch</div>
-                  </div>
-                  <div className="bg-red-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-red-600">
-                      {data.summary.longShotCount}
-                    </div>
-                    <div className="text-sm text-gray-600">Long Shot</div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+                )
+              })}
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }

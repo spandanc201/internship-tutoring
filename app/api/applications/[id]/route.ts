@@ -97,6 +97,9 @@ export async function PUT(
 
     // Extract updateable fields
     const {
+      company,
+      role,
+      appliedDate,
       status,
       interviewDates,
       interviewNotes,
@@ -106,6 +109,9 @@ export async function PUT(
 
     // Build update data (only include provided fields)
     const updateData: any = {}
+    if (company !== undefined) updateData.company = company
+    if (role !== undefined) updateData.role = role
+    if (appliedDate !== undefined) updateData.appliedDate = new Date(appliedDate)
     if (status !== undefined) updateData.status = status
     if (interviewDates !== undefined) updateData.interviewDates = interviewDates
     if (interviewNotes !== undefined) updateData.interviewNotes = interviewNotes
@@ -169,7 +175,7 @@ export async function DELETE(
       where: { id },
     })
 
-    return NextResponse.json(null, { status: 204 })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
     console.error('DELETE /api/applications/:id error:', error)
     return NextResponse.json(

@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { company, role, description, source } = body
+    const { company, role, description, source, status, appliedDate, personalNotes } = body
 
     // Validate required fields
     if (!company || !role) {
@@ -124,8 +124,9 @@ export async function POST(request: NextRequest) {
         role,
         description: description || null,
         source: source || 'manual',
-        status: 'applied',
-        appliedDate: new Date(),
+        status: status || 'applied',
+        appliedDate: appliedDate ? new Date(appliedDate) : new Date(),
+        personalNotes: personalNotes || null,
       },
     })
 

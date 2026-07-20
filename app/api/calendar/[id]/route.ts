@@ -175,7 +175,7 @@ export async function DELETE(
       where: { id },
     })
 
-    return NextResponse.json(null, { status: 204 })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
     console.error('DELETE /api/calendar/:id error:', error)
     return NextResponse.json(

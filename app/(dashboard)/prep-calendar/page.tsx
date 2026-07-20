@@ -1,692 +1,616 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import CalendarView from '@/components/CalendarView'
-import CalendarEventForm from '@/components/CalendarEventForm'
+import { useEffect, useState } from 'react'
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
+import Dialog from '@/components/fieldwork/Dialog'
+import { useFlash } from '@/components/fieldwork/Flash'
+import { MONTHS, dayKey, fmtDate } from '@/lib/format'
 
-interface PrepCalendarEvent {
+interface PrepEvent {
   id: string
-  userId: string
   title: string
   description?: string
-  dueDate: string | Date
+  dueDate: string
   estimatedHours: number
   eventType: string
   isCompleted: boolean
-  isSnoozed: boolean
-  snoozeUntil?: string | Date | null
+  isSnoozed?: boolean
+  snoozeUntil?: string | null
   source: string
-  createdAt: string | Date
-  updatedAt: string | Date
-  applicationId?: string
 }
 
-interface EventDetailsModalProps {
-  event: PrepCalendarEvent | null
-  onClose: () => void
-  onEdit: (event: PrepCalendarEvent) => void
-  onDelete: (eventId: string) => Promise<void>
-  onMarkComplete: (eventId: string, isCompleted: boolean) => Promise<void>
-  onSnooze: (eventId: string, snoozeUntil: Date) => Promise<void>
+type CalView = 'monthly' | 'weekly' | 'list'
+
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const WEEK_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+function chipColors(type: string): { accent: string; bg: string } {
+  if (type === 'interview')
+    return { accent: 'var(--color-accent)', bg: 'color-mix(in srgb, var(--color-accent) 12%, transparent)' }
+  if (type === 'general') return { accent: 'var(--color-neutral-500)', bg: 'var(--color-surface)' }
+  return { accent: 'var(--color-accent-300)', bg: 'transparent' }
 }
 
-// Helper function to format date
-function formatDate(date: Date | string): string {
-  const d = new Date(date)
-  return d.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+function typeLabel(type: string): string {
+  if (type === 'interview') return 'Interview'
+  if (type === 'general') return 'General'
+  return 'Custom'
 }
 
-function formatDateFull(date: Date | string): string {
-  const d = new Date(date)
-  return d.toLocaleDateString('en-US', {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
-
-// Helper to check if event is snoozed
-function isEventSnoozed(event: PrepCalendarEvent): boolean {
-  if (!event.isSnoozed || !event.snoozeUntil) {
-    return false
-  }
-  return new Date(event.snoozeUntil) > new Date()
-}
-
-// Event Details Modal Component
-function EventDetailsModal({
-  event,
-  onClose,
-  onEdit,
-  onDelete,
-  onMarkComplete,
-  onSnooze,
-}: EventDetailsModalProps) {
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [showSnoozeOptions, setShowSnoozeOptions] = useState(false)
-  const [isSnoozing, setIsSnoozing] = useState(false)
-
-  if (!event) return null
-
-  const handleDelete = async () => {
-    setIsDeleting(true)
-    try {
-      await onDelete(event.id)
-      onClose()
-    } catch (error) {
-      console.error('Failed to delete event:', error)
-      setIsDeleting(false)
-    }
-  }
-
-  const handleSnooze = async (hours: number) => {
-    setIsSnoozing(true)
-    try {
-      const snoozeUntil = new Date()
-      snoozeUntil.setHours(snoozeUntil.getHours() + hours)
-      await onSnooze(event.id, snoozeUntil)
-      setShowSnoozeOptions(false)
-      onClose()
-    } catch (error) {
-      console.error('Failed to snooze event:', error)
-      setIsSnoozing(false)
-    }
-  }
-
+function EventChip({ event, onOpen }: { event: PrepEvent; onOpen: () => void }) {
+  const { accent, bg } = chipColors(event.eventType)
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
-        <div className="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold">Event Details</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
-          >
-            ×
-          </button>
-        </div>
-
-        <div className="p-6 space-y-4">
-          <div>
-            <p className="text-gray-600 text-sm">Title</p>
-            <p className="text-lg font-bold">
-              {event.isCompleted && <span className="line-through">✓ </span>}
-              {event.title}
-            </p>
-          </div>
-
-          {event.description && (
-            <div>
-              <p className="text-gray-600 text-sm">Description</p>
-              <p className="text-gray-700">{event.description}</p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-600 text-sm">Due Date</p>
-              <p className="font-bold">{formatDateFull(event.dueDate)}</p>
-            </div>
-            <div>
-              <p className="text-gray-600 text-sm">Hours</p>
-              <p className="font-bold">{event.estimatedHours}h</p>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-gray-600 text-sm">Type</p>
-            <span
-              className={`inline-block px-3 py-1 rounded text-xs font-bold ${
-                event.eventType === 'interview'
-                  ? 'bg-blue-100 text-blue-900'
-                  : event.eventType === 'general'
-                    ? 'bg-green-100 text-green-900'
-                    : 'bg-gray-100 text-gray-900'
-              }`}
-            >
-              {event.eventType}
-            </span>
-          </div>
-
-          <div>
-            <p className="text-gray-600 text-sm">Status</p>
-            <p className="font-bold">
-              {event.isCompleted ? '✓ Completed' : 'Pending'}
-            </p>
-          </div>
-
-          {event.source === 'student_created' && (
-            <div className="text-xs text-gray-500">
-              Created: {formatDate(event.createdAt)}
-            </div>
-          )}
-        </div>
-
-        <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 space-y-2">
-          <button
-            onClick={() => {
-              onMarkComplete(event.id, !event.isCompleted)
-              onClose()
-            }}
-            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-medium text-sm"
-          >
-            {event.isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
-          </button>
-
-          {showSnoozeOptions ? (
-            <div className="bg-yellow-50 border border-yellow-200 rounded p-3 space-y-2">
-              <p className="text-sm text-yellow-700 font-medium mb-2">Snooze for:</p>
-              <button
-                onClick={() => handleSnooze(1)}
-                disabled={isSnoozing}
-                className="w-full px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm font-medium disabled:opacity-50"
-              >
-                1 Hour
-              </button>
-              <button
-                onClick={() => handleSnooze(4)}
-                disabled={isSnoozing}
-                className="w-full px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm font-medium disabled:opacity-50"
-              >
-                4 Hours
-              </button>
-              <button
-                onClick={() => handleSnooze(24)}
-                disabled={isSnoozing}
-                className="w-full px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm font-medium disabled:opacity-50"
-              >
-                1 Day
-              </button>
-              <button
-                onClick={() => setShowSnoozeOptions(false)}
-                className="w-full px-3 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm font-medium"
-                disabled={isSnoozing}
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowSnoozeOptions(true)}
-              className="w-full px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 font-medium text-sm"
-            >
-              Snooze
-            </button>
-          )}
-
-          {event.source === 'student_created' && (
-            <>
-              <button
-                onClick={() => onEdit(event)}
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium text-sm"
-              >
-                Edit
-              </button>
-
-              {showDeleteConfirm ? (
-                <div className="bg-red-50 border border-red-200 rounded p-3">
-                  <p className="text-sm text-red-700 mb-3 font-medium">
-                    Are you sure? This cannot be undone.
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleDelete}
-                      className="flex-1 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium disabled:opacity-50"
-                      disabled={isDeleting}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={() => setShowDeleteConfirm(false)}
-                      className="flex-1 px-3 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm font-medium"
-                      disabled={isDeleting}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  className="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-medium text-sm"
-                >
-                  Delete
-                </button>
-              )}
-            </>
-          )}
-
-          <button
-            onClick={onClose}
-            className="w-full px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 font-medium text-sm"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
+    <button
+      onClick={onOpen}
+      title={event.title}
+      style={{
+        textAlign: 'left',
+        cursor: 'pointer',
+        fontSize: 10.5,
+        lineHeight: 1.25,
+        padding: '3px 6px',
+        border: 0,
+        borderLeft: `2px solid ${accent}`,
+        borderRadius: 2,
+        background: bg,
+        color: 'var(--color-text)',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        ...(event.isCompleted ? { textDecoration: 'line-through', opacity: 0.55 } : {}),
+      }}
+    >
+      {event.title}
+    </button>
   )
 }
 
 export default function PrepCalendarPage() {
-  const [events, setEvents] = useState<PrepCalendarEvent[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [selectedView, setSelectedView] = useState<'monthly' | 'weekly' | 'list'>(
-    'monthly'
-  )
-  const [filterType, setFilterType] = useState<'all' | 'interview' | 'general'>(
-    'all'
-  )
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedEvent, setSelectedEvent] = useState<PrepCalendarEvent | null>(null)
-  const [showEventForm, setShowEventForm] = useState(false)
-  const [editingEvent, setEditingEvent] = useState<PrepCalendarEvent | null>(null)
+  const flash = useFlash()
+  const [events, setEvents] = useState<PrepEvent[]>([])
+  const [calDate, setCalDate] = useState(() => new Date())
+  const [view, setView] = useState<CalView>('monthly')
+  const [openEventId, setOpenEventId] = useState<string | null>(null)
+  const [taskOpen, setTaskOpen] = useState(false)
+  const [taskDraft, setTaskDraft] = useState({ title: '', date: dayKey(new Date()), hours: '2' })
 
-  // Fetch events from API
-  const fetchEvents = async () => {
-    setIsLoading(true)
-    setError('')
+  async function fetchEvents() {
     try {
-      const params = new URLSearchParams()
-      if (filterType !== 'all') {
-        params.append('type', filterType)
+      const res = await fetch('/api/calendar?limit=500')
+      if (res.ok) {
+        const data = await res.json()
+        setEvents(data.events ?? [])
       }
-
-      const response = await fetch(`/api/calendar?${params}`)
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Please log in to view your calendar')
-        }
-        throw new Error('Failed to load calendar events')
-      }
-
-      const data = await response.json()
-      setEvents(data.events || [])
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An error occurred'
-      setError(errorMessage)
-    } finally {
-      setIsLoading(false)
-    }
+    } catch {}
   }
 
-  // Load events on mount and when filter changes
   useEffect(() => {
     fetchEvents()
-  }, [filterType])
+  }, [])
 
-  // Filter events for display (excluding snoozed events)
-  const filteredEvents = events.filter((e) => {
-    // Skip snoozed events that haven't been unsnoozed yet
-    if (isEventSnoozed(e)) return false
-    if (filterType === 'all') return true
-    return e.eventType === filterType
+  const eventsFor = (key: string) => events.filter((e) => dayKey(e.dueDate) === key)
+  const todayK = dayKey(new Date())
+
+  // ── Month grid ──
+  const y = calDate.getFullYear()
+  const m = calDate.getMonth()
+  const firstDow = new Date(y, m, 1).getDay()
+  const daysInMonth = new Date(y, m + 1, 0).getDate()
+  type Cell = { day: number | ''; key?: string; isToday?: boolean; events: PrepEvent[]; more: number }
+  const cells: Cell[] = []
+  for (let i = 0; i < firstDow; i++) cells.push({ day: '', events: [], more: 0 })
+  for (let day = 1; day <= daysInMonth; day++) {
+    const key = `${y}-${String(m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    const evs = eventsFor(key)
+    cells.push({ day, key, isToday: key === todayK, events: evs.slice(0, 2), more: Math.max(evs.length - 2, 0) })
+  }
+  while (cells.length % 7 !== 0) cells.push({ day: '', events: [], more: 0 })
+  const weeks: Cell[][] = []
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
+
+  // ── Week cells ──
+  const monday = new Date(calDate)
+  monday.setDate(calDate.getDate() - ((calDate.getDay() + 6) % 7))
+  const weekCells = [...Array(7)].map((_, i) => {
+    const d = new Date(monday)
+    d.setDate(monday.getDate() + i)
+    const key = dayKey(d)
+    const evs = eventsFor(key)
+    return {
+      wd: WEEK_NAMES[i],
+      day: d.getDate(),
+      isToday: key === todayK,
+      events: evs,
+      hours: evs.reduce((s, e) => s + e.estimatedHours, 0),
+    }
   })
+  const weekTotal = weekCells.reduce((s, c) => s + c.hours, 0)
+  const intensity = weekTotal < 5 ? 'Light' : weekTotal < 12 ? 'Moderate' : weekTotal < 20 ? 'Heavy' : 'Intensive'
 
-  // Handle mark complete
-  const handleMarkComplete = async (eventId: string, isCompleted: boolean) => {
+  const listEvents = [...events].sort(
+    (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+  )
+
+  const openEvent = events.find((e) => e.id === openEventId) ?? null
+
+  async function toggleComplete(id: string, isCompleted: boolean) {
     try {
-      const response = await fetch(`/api/calendar/${eventId}`, {
+      const res = await fetch(`/api/calendar/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isCompleted }),
       })
-
-      if (!response.ok) {
-        throw new Error('Failed to update event')
-      }
-
-      // Update local state
-      setEvents((prev) =>
-        prev.map((e) =>
-          e.id === eventId ? { ...e, isCompleted } : e
-        )
-      )
-
-      // Update selected event if it's being viewed
-      if (selectedEvent?.id === eventId) {
-        setSelectedEvent({ ...selectedEvent, isCompleted })
-      }
-    } catch (err) {
-      console.error('Failed to mark complete:', err)
-      setError('Failed to update event status')
+      if (!res.ok) throw new Error()
+      setEvents((prev) => prev.map((e) => (e.id === id ? { ...e, isCompleted } : e)))
+    } catch {
+      flash('Failed to update task')
     }
   }
 
-  // Handle snooze event
-  const handleSnooze = async (eventId: string, snoozeUntil: Date) => {
+  async function snoozeEvent(event: PrepEvent) {
+    const next = new Date(event.dueDate)
+    next.setDate(next.getDate() + 1)
     try {
-      const response = await fetch(`/api/calendar/${eventId}`, {
+      const res = await fetch(`/api/calendar/${event.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dueDate: next.toISOString() }),
+      })
+      if (!res.ok) throw new Error()
+      setEvents((prev) =>
+        prev.map((e) => (e.id === event.id ? { ...e, dueDate: next.toISOString() } : e))
+      )
+      setOpenEventId(null)
+      flash('Snoozed to the next day')
+    } catch {
+      flash('Failed to snooze task')
+    }
+  }
+
+  async function saveTask() {
+    if (!taskDraft.title.trim()) return
+    try {
+      const res = await fetch('/api/calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          isSnoozed: true,
-          snoozeUntil: snoozeUntil.toISOString(),
+          title: taskDraft.title.trim(),
+          dueDate: `${taskDraft.date}T00:00:00`,
+          estimatedHours: parseFloat(taskDraft.hours) || 1,
+          type: 'custom',
         }),
       })
-
-      if (!response.ok) {
-        throw new Error('Failed to snooze event')
-      }
-
-      // Update local state - remove the snoozed event from view
-      setEvents((prev) =>
-        prev.filter((e) => e.id !== eventId)
-      )
-
-      setSelectedEvent(null)
-    } catch (err) {
-      console.error('Failed to snooze event:', err)
-      setError('Failed to snooze event')
+      if (!res.ok) throw new Error()
+      setTaskOpen(false)
+      setTaskDraft({ title: '', date: dayKey(new Date()), hours: '2' })
+      fetchEvents()
+      flash('Task added')
+    } catch {
+      flash('Failed to add task')
     }
-  }
-
-  // Handle create/update event
-  const handleSubmitEvent = async (eventData: any) => {
-    try {
-      if (editingEvent) {
-        // Update existing event
-        const response = await fetch(`/api/calendar/${editingEvent.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(eventData),
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to update event')
-        }
-
-        const updatedEvent = await response.json()
-        setEvents((prev) =>
-          prev.map((e) => (e.id === editingEvent.id ? updatedEvent : e))
-        )
-      } else {
-        // Create new event
-        const response = await fetch('/api/calendar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...eventData,
-            type: 'custom',
-          }),
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Failed to create event')
-        }
-
-        const newEvent = await response.json()
-        setEvents((prev) => [...prev, newEvent])
-      }
-
-      setShowEventForm(false)
-      setEditingEvent(null)
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to save event'
-      throw new Error(errorMessage)
-    }
-  }
-
-  // Handle delete event
-  const handleDeleteEvent = async (eventId: string) => {
-    try {
-      const response = await fetch(`/api/calendar/${eventId}`, {
-        method: 'DELETE',
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to delete event')
-      }
-
-      setEvents((prev) => prev.filter((e) => e.id !== eventId))
-      setSelectedEvent(null)
-    } catch (err) {
-      console.error('Failed to delete event:', err)
-      setError('Failed to delete event')
-    }
-  }
-
-  // Handle edit event
-  const handleEditEvent = (event: PrepCalendarEvent) => {
-    if (event.source === 'student_created') {
-      setEditingEvent(event)
-      setShowEventForm(true)
-      setSelectedEvent(null)
-    }
-  }
-
-  // Handle event click
-  const handleEventClick = (event: PrepCalendarEvent) => {
-    setSelectedEvent(event)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Prep Calendar</h1>
-            <p className="text-gray-600 mt-2">
-              Manage your interview and general prep tasks
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setEditingEvent(null)
-              setShowEventForm(true)
-            }}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-bold text-lg"
-          >
-            + Add Event
-          </button>
+    <div className="fw-fade" style={{ maxWidth: 1060, margin: '0 auto' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          marginBottom: 22,
+          gap: 20,
+        }}
+      >
+        <div>
+          <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.02em', margin: '0 0 4px' }}>
+            Prep Calendar
+          </h1>
+          <p className="text-muted" style={{ fontSize: 15, margin: 0 }}>
+            A schedule built from your interview dates and available hours.
+          </p>
         </div>
-
-        {/* Error Alert */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-8">
-            <p>{error}</p>
-            <button
-              onClick={() => setError('')}
-              className="text-red-600 underline text-sm mt-2"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
-        {/* Filters and View Toggle */}
-        <div className="bg-white rounded-lg shadow mb-8 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* View Toggle */}
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-3">
-                View
-              </label>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setSelectedView('monthly')}
-                  className={`px-4 py-2 rounded font-bold ${
-                    selectedView === 'monthly'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Monthly
-                </button>
-                <button
-                  onClick={() => setSelectedView('weekly')}
-                  className={`px-4 py-2 rounded font-bold ${
-                    selectedView === 'weekly'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Weekly
-                </button>
-                <button
-                  onClick={() => setSelectedView('list')}
-                  className={`px-4 py-2 rounded font-bold ${
-                    selectedView === 'list'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  List
-                </button>
-              </div>
-            </div>
-
-            {/* Filter by Type */}
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-3">
-                Filter
-              </label>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setFilterType('all')}
-                  className={`px-4 py-2 rounded font-bold ${
-                    filterType === 'all'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => setFilterType('interview')}
-                  className={`px-4 py-2 rounded font-bold ${
-                    filterType === 'interview'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Interview
-                </button>
-                <button
-                  onClick={() => setFilterType('general')}
-                  className={`px-4 py-2 rounded font-bold ${
-                    filterType === 'general'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  General
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="bg-white rounded-lg shadow p-8">
-            <div className="flex justify-center items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
-              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce delay-100"></div>
-              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce delay-200"></div>
-            </div>
-            <p className="text-center text-gray-600 mt-4">Loading calendar...</p>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!isLoading && filteredEvents.length === 0 && (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
-            <p className="text-gray-600 text-lg mb-4">
-              No events scheduled for the selected filter
-            </p>
-            <button
-              onClick={() => {
-                setEditingEvent(null)
-                setShowEventForm(true)
-              }}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-bold"
-            >
-              Create First Event
-            </button>
-          </div>
-        )}
-
-        {/* Calendar Display */}
-        {!isLoading && filteredEvents.length > 0 && (
-          <CalendarView
-            events={filteredEvents}
-            selectedView={selectedView}
-            onEventClick={handleEventClick}
-            onMarkComplete={handleMarkComplete}
-            currentDate={currentDate}
-            onDateChange={setCurrentDate}
-          />
-        )}
-
-        {/* Sidebar - Summary Stats */}
-        {!isLoading && filteredEvents.length > 0 && (
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="font-bold text-gray-700 mb-2">Total Events</h3>
-              <p className="text-3xl font-bold text-blue-600">
-                {filteredEvents.length}
-              </p>
-            </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="font-bold text-gray-700 mb-2">Completed</h3>
-              <p className="text-3xl font-bold text-green-600">
-                {filteredEvents.filter((e) => e.isCompleted).length}
-              </p>
-            </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="font-bold text-gray-700 mb-2">Total Hours</h3>
-              <p className="text-3xl font-bold text-orange-600">
-                {filteredEvents
-                  .reduce((sum, e) => sum + e.estimatedHours, 0)
-                  .toFixed(1)}
-                h
-              </p>
-            </div>
-          </div>
-        )}
+        <button className="btn btn-primary" onClick={() => setTaskOpen(true)} style={{ height: 40 }}>
+          <Plus size={15} strokeWidth={1.9} />
+          Add task
+        </button>
       </div>
 
-      {/* Event Details Modal */}
-      <EventDetailsModal
-        event={selectedEvent}
-        onClose={() => setSelectedEvent(null)}
-        onEdit={handleEditEvent}
-        onDelete={handleDeleteEvent}
-        onMarkComplete={handleMarkComplete}
-        onSnooze={handleSnooze}
-      />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 18,
+          gap: 16,
+          flexWrap: 'wrap',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <button
+            className="btn btn-icon btn-secondary"
+            aria-label="Previous month"
+            onClick={() => setCalDate(new Date(y, m - 1, 1))}
+          >
+            <ChevronLeft size={16} strokeWidth={2} />
+          </button>
+          <h2 style={{ fontSize: 26, fontWeight: 600, margin: 0, minWidth: 200, textAlign: 'center' }}>
+            {MONTHS[m]} {y}
+          </h2>
+          <button
+            className="btn btn-icon btn-secondary"
+            aria-label="Next month"
+            onClick={() => setCalDate(new Date(y, m + 1, 1))}
+          >
+            <ChevronRight size={16} strokeWidth={2} />
+          </button>
+        </div>
+        <div className="seg">
+          {(['monthly', 'weekly', 'list'] as CalView[]).map((v) => (
+            <label key={v} className="seg-opt">
+              <input type="radio" name="calview" checked={view === v} onChange={() => setView(v)} />
+              {v === 'monthly' ? 'Month' : v === 'weekly' ? 'Week' : 'List'}
+            </label>
+          ))}
+        </div>
+      </div>
 
-      {/* Event Form Modal */}
-      {showEventForm && (
-        <CalendarEventForm
-          onSubmit={handleSubmitEvent}
-          onCancel={() => {
-            setShowEventForm(false)
-            setEditingEvent(null)
+      <div
+        style={{
+          display: 'flex',
+          gap: 18,
+          fontSize: 12,
+          color: 'color-mix(in srgb, var(--color-text) 60%, transparent)',
+          marginBottom: 14,
+        }}
+      >
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--color-accent)' }} />
+          Interview prep
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--color-neutral-500)' }} />
+          General prep
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 10, height: 10, borderRadius: 2, border: '1.5px solid var(--color-accent)' }} />
+          Custom
+        </span>
+      </div>
+
+      {view === 'monthly' && (
+        <div
+          style={{
+            border: '1px solid var(--color-divider)',
+            borderRadius: 'var(--radius-md)',
+            overflow: 'hidden',
           }}
-          initialEvent={editingEvent || undefined}
-        />
+        >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', background: 'var(--color-surface)' }}>
+            {WEEKDAYS.map((wd) => (
+              <div
+                key={wd}
+                style={{
+                  padding: 9,
+                  textAlign: 'center',
+                  fontSize: 11,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'color-mix(in srgb, var(--color-text) 55%, transparent)',
+                  borderBottom: '1px solid var(--color-divider)',
+                }}
+              >
+                {wd}
+              </div>
+            ))}
+          </div>
+          {weeks.map((week, wi) => (
+            <div key={wi} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
+              {week.map((cell, ci) => (
+                <div
+                  key={ci}
+                  style={{
+                    minHeight: 104,
+                    padding: '6px 7px',
+                    borderRight: '1px solid var(--color-divider)',
+                    borderBottom: '1px solid var(--color-divider)',
+                    background:
+                      cell.day === ''
+                        ? 'var(--color-surface)'
+                        : cell.isToday
+                          ? 'color-mix(in srgb, var(--color-accent) 6%, transparent)'
+                          : 'var(--color-bg)',
+                  }}
+                >
+                  <div
+                    className="tnum"
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: cell.isToday ? 'var(--color-accent)' : 'var(--color-text)',
+                      marginBottom: 4,
+                    }}
+                  >
+                    {cell.day}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    {cell.events.map((ev) => (
+                      <EventChip key={ev.id} event={ev} onOpen={() => setOpenEventId(ev.id)} />
+                    ))}
+                    {cell.more > 0 && (
+                      <div className="text-muted" style={{ fontSize: 10, paddingLeft: 6 }}>
+                        +{cell.more} more
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {view === 'weekly' && (
+        <>
+          <div
+            style={{
+              padding: '16px 18px',
+              border: '1px solid var(--color-divider)',
+              borderRadius: 'var(--radius-md)',
+              marginBottom: 16,
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 9,
+              }}
+            >
+              <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: 14 }}>
+                Prep intensity · {weekTotal}h scheduled
+              </span>
+              <span style={{ fontSize: 12.5, color: 'var(--color-accent-700)', fontWeight: 600 }}>
+                {intensity} week
+              </span>
+            </div>
+            <div style={{ height: 8, borderRadius: 4, background: 'var(--color-surface)', overflow: 'hidden' }}>
+              <div
+                style={{
+                  height: '100%',
+                  width: `${Math.min((weekTotal / 25) * 100, 100)}%`,
+                  background: 'var(--color-accent)',
+                  borderRadius: 4,
+                }}
+              />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10 }}>
+            {weekCells.map((cell) => (
+              <div
+                key={cell.wd}
+                style={{
+                  border: '1px solid var(--color-divider)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px 9px',
+                  minHeight: 170,
+                  background: cell.isToday
+                    ? 'color-mix(in srgb, var(--color-accent) 6%, transparent)'
+                    : 'var(--color-bg)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <div style={{ textAlign: 'center', marginBottom: 8 }}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      color: 'color-mix(in srgb, var(--color-text) 55%, transparent)',
+                    }}
+                  >
+                    {cell.wd}
+                  </div>
+                  <div
+                    className="tnum"
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: 600,
+                      fontSize: 17,
+                      color: cell.isToday ? 'var(--color-accent)' : 'var(--color-text)',
+                    }}
+                  >
+                    {cell.day}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+                  {cell.events.map((ev) => (
+                    <EventChip key={ev.id} event={ev} onOpen={() => setOpenEventId(ev.id)} />
+                  ))}
+                </div>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: 'color-mix(in srgb, var(--color-text) 60%, transparent)',
+                    marginTop: 8,
+                    paddingTop: 6,
+                    borderTop: '1px solid var(--color-divider)',
+                  }}
+                >
+                  {cell.hours ? `${cell.hours}h` : '—'}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {view === 'list' && (
+        <div
+          style={{
+            border: '1px solid var(--color-divider)',
+            borderRadius: 'var(--radius-md)',
+            overflow: 'hidden',
+          }}
+        >
+          <table className="table">
+            <thead>
+              <tr>
+                <th style={{ width: 44, paddingLeft: 20 }}></th>
+                <th>Task</th>
+                <th>Due</th>
+                <th>Type</th>
+                <th>Hours</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listEvents.map((ev) => (
+                <tr key={ev.id}>
+                  <td style={{ paddingLeft: 20 }}>
+                    <input
+                      type="checkbox"
+                      checked={ev.isCompleted}
+                      onChange={() => toggleComplete(ev.id, !ev.isCompleted)}
+                      style={{ width: 16, height: 16, accentColor: 'var(--color-accent)', cursor: 'pointer' }}
+                    />
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => setOpenEventId(ev.id)}
+                      style={{
+                        background: 'none',
+                        border: 0,
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 14,
+                        color: 'var(--color-text)',
+                        textAlign: 'left',
+                        ...(ev.isCompleted ? { textDecoration: 'line-through', opacity: 0.55 } : {}),
+                      }}
+                    >
+                      {ev.title}
+                    </button>
+                  </td>
+                  <td style={{ fontSize: 13 }}>{fmtDate(ev.dueDate)}</td>
+                  <td>
+                    <span
+                      className={
+                        ev.eventType === 'interview'
+                          ? 'tag tag-accent'
+                          : ev.eventType === 'general'
+                            ? 'tag tag-neutral'
+                            : 'tag tag-outline'
+                      }
+                    >
+                      {typeLabel(ev.eventType)}
+                    </span>
+                  </td>
+                  <td className="tnum" style={{ fontSize: 13 }}>{ev.estimatedHours}h</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {listEvents.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '50px 20px' }}>
+              <p className="text-muted" style={{ margin: 0 }}>
+                Nothing scheduled yet. Add a task to get started.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {openEvent && (
+        <Dialog onClose={() => setOpenEventId(null)}>
+          <div className="kicker" style={{ letterSpacing: '0.1em' }}>
+            {openEvent.eventType === 'interview'
+              ? 'Interview prep'
+              : openEvent.eventType === 'general'
+                ? 'General prep'
+                : 'Custom task'}{' '}
+            · {fmtDate(openEvent.dueDate)}
+          </div>
+          <div
+            className="dialog-title"
+            style={openEvent.isCompleted ? { textDecoration: 'line-through', opacity: 0.6 } : undefined}
+          >
+            {openEvent.title}
+          </div>
+          <div className="dialog-body">
+            {openEvent.description ||
+              (openEvent.eventType === 'interview'
+                ? 'Timed against an upcoming interview in your tracker.'
+                : openEvent.eventType === 'general'
+                  ? 'Part of your rolling maintenance schedule.'
+                  : 'A task you added yourself.')}
+            <br />
+            <br />
+            Estimated {openEvent.estimatedHours}h of focused work.
+          </div>
+          <div className="dialog-actions">
+            <button className="btn btn-secondary" onClick={() => snoozeEvent(openEvent)}>
+              Snooze a day
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                toggleComplete(openEvent.id, !openEvent.isCompleted)
+                setOpenEventId(null)
+              }}
+            >
+              {openEvent.isCompleted ? 'Mark not done' : 'Mark complete'}
+            </button>
+          </div>
+        </Dialog>
+      )}
+
+      {taskOpen && (
+        <Dialog onClose={() => setTaskOpen(false)}>
+          <div className="dialog-title">Add a prep task</div>
+          <div className="field" style={{ margin: 0 }}>
+            <label>Task</label>
+            <input
+              className="input"
+              value={taskDraft.title}
+              placeholder="e.g. Practice SQL joins"
+              onChange={(e) => setTaskDraft({ ...taskDraft, title: e.target.value })}
+            />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="field" style={{ margin: 0 }}>
+              <label>Date</label>
+              <input
+                className="input"
+                type="date"
+                value={taskDraft.date}
+                onChange={(e) => setTaskDraft({ ...taskDraft, date: e.target.value })}
+              />
+            </div>
+            <div className="field" style={{ margin: 0 }}>
+              <label>Hours</label>
+              <input
+                className="input"
+                type="number"
+                min={0.5}
+                step={0.5}
+                value={taskDraft.hours}
+                onChange={(e) => setTaskDraft({ ...taskDraft, hours: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className="dialog-actions">
+            <button className="btn btn-secondary" onClick={() => setTaskOpen(false)}>
+              Cancel
+            </button>
+            <button className="btn btn-primary" onClick={saveTask}>
+              Add task
+            </button>
+          </div>
+        </Dialog>
       )}
     </div>
   )

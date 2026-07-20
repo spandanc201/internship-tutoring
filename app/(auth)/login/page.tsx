@@ -1,7 +1,9 @@
 'use client'
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import AuthPanel from '@/components/fieldwork/AuthPanel'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -27,46 +29,61 @@ export default function LoginPage() {
       }
 
       router.push('/dashboard')
-    } catch (err) {
+    } catch {
       setError('An error occurred')
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8">
-        <h2 className="text-center text-3xl font-bold">Login</h2>
-        <form onSubmit={handleLogin} className="space-y-4">
-          {error && <div className="text-red-600 text-sm">{error}</div>}
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded"
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-          >
-            Login
+    <div style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1.05fr 1fr' }}>
+      <AuthPanel />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
+        <form onSubmit={handleLogin} style={{ width: 'min(360px, 100%)' }}>
+          <div className="kicker" style={{ marginBottom: 8 }}>Welcome back</div>
+          <h2 style={{ fontSize: 34, fontWeight: 600, margin: '0 0 6px' }}>Sign in to Fieldwork</h2>
+          <p className="text-muted" style={{ fontSize: 14, margin: '0 0 26px' }}>
+            Pick up where you left off.
+          </p>
+          {error && (
+            <div style={{ fontSize: 12.5, color: 'var(--color-accent-700)', marginBottom: 14 }}>
+              {error}
+            </div>
+          )}
+          <div className="field" style={{ marginBottom: 16 }}>
+            <label>Email</label>
+            <input
+              className="input"
+              type="email"
+              placeholder="you@university.edu"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="field" style={{ marginBottom: 16 }}>
+            <label>Password</label>
+            <input
+              className="input"
+              type="password"
+              placeholder="••••••••"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button className="btn btn-primary btn-block" type="submit" style={{ height: 42, marginTop: 8 }}>
+            Sign in
           </button>
+          <div className="hr" style={{ margin: '22px 0' }} />
+          <p className="text-muted" style={{ fontSize: 13, textAlign: 'center', margin: 0 }}>
+            New to Fieldwork?{' '}
+            <Link href="/signup" style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>
+              Create one
+            </Link>
+          </p>
         </form>
-        <p className="text-center text-sm">
-          Don't have an account?{' '}
-          <Link href="/signup" className="text-blue-600 hover:underline">
-            Sign up
-          </Link>
-        </p>
       </div>
     </div>
   )
