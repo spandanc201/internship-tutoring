@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Determine sort order
-    let orderBy: any = {}
+    const orderBy: any = {}
     switch (sort) {
       case 'company':
         orderBy.company = 'asc'

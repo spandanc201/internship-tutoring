@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<template id="__bundler_thumbnail">
+<div style="width:100%;height:100%;background:#1a1815;display:flex;align-items:center;justify-content:center">
+<svg viewBox="0 0 100 100" width="40%" height="40%"><circle cx="50" cy="50" r="34" fill="none" stroke="#b68235" stroke-width="4"/><circle cx="50" cy="50" r="11" fill="#b68235"/></svg>
+</div>
+</template>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/classical-694eb2ee-cc52-45fd-b7a4-9dc85ddcf03c/styles.css">
+<script src="_ds/classical-694eb2ee-cc52-45fd-b7a4-9dc85ddcf03c/_ds_bundle.js"></script>
+<style>
+  [data-navitem]{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+    font-family:var(--font-heading);font-weight:600;font-size:14.5px;color:var(--color-text);
+    background:transparent;border:0;border-left:2px solid transparent;
+    padding:10px 14px 10px 18px;border-radius:0 var(--radius-md) var(--radius-md) 0;letter-spacing:-.01em}
+  [data-navitem] svg{width:18px;height:18px;flex:none;opacity:.75}
+  [data-navitem]:hover{background:color-mix(in srgb,var(--color-text) 6%,transparent);color:var(--color-accent)}
+  [data-navitem][data-active="true"]{color:var(--color-accent);border-left-color:var(--color-accent);
+    background:color-mix(in srgb,var(--color-accent) 9%,transparent)}
+  [data-navitem][data-active="true"] svg{opacity:1}
+  [data-tabbtn]{font-family:var(--font-heading);font-weight:600;font-size:15px;cursor:pointer;
+    background:transparent;border:0;border-bottom:2px solid transparent;padding:12px 4px;color:color-mix(in srgb,var(--color-text) 55%,transparent);
+    display:inline-flex;align-items:center;gap:9px}
+  [data-tabbtn]:hover{color:var(--color-text)}
+  [data-tabbtn][data-active="true"]{color:var(--color-accent);border-bottom-color:var(--color-accent)}
+  .fw-fade{animation:fwFade .35s ease both}
+  @keyframes fwFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes fwRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes fwPop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+  @keyframes fwGrowX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes fwGrowY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @keyframes fwCaret{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+  @keyframes fwPulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+  .fw-scene{animation:fwRise .5s cubic-bezier(.2,.7,.3,1) both}
+  .fw-ind{cursor:pointer;transition:color .25s}
+  .fw-ind:hover{color:#d8cfc0 !important}
+  .fw-reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1)}
+  .fw-reveal[data-in="1"]{opacity:1;transform:none}
+  .fw-reveal .anim-x{transform:scaleX(0);transform-origin:left}
+  .fw-reveal[data-in="1"] .anim-x{animation:fwGrowX .9s .15s cubic-bezier(.2,.7,.3,1) forwards}
+  .fw-reveal .anim-y{transform:scaleY(0);transform-origin:bottom}
+  .fw-reveal[data-in="1"] .anim-y{animation:fwGrowY .6s cubic-bezier(.2,.7,.3,1) forwards}
+  .fw-reveal .anim-pop{opacity:0}
+  .fw-reveal[data-in="1"] .anim-pop{animation:fwPop .5s cubic-bezier(.2,.7,.3,1) forwards}
+  .fw-lift{transition:transform .4s cubic-bezier(.2,.7,.3,1),box-shadow .4s ease}
+  .fw-lift:hover{transform:translateY(-4px)}
+  .fw-topnav a{color:color-mix(in srgb,var(--color-text) 62%,transparent);text-decoration:none;font-family:var(--font-heading);font-weight:600;font-size:14px;transition:color .2s}
+  .fw-topnav a:hover{color:var(--color-accent)}
+</style>
+</helmet>
+
+<!-- ══════════ LOGIN ══════════ -->
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--color-bg);color:var(--color-text)">
+
+  <!-- STICKY TOP BAR -->
+  <div style="position:sticky;top:0;z-index:30;background:var(--color-bg);border-bottom:1px solid var(--color-divider)">
+    <div style="max-width:1120px;margin:0 auto;padding:15px 40px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:22px;height:22px;border:1.5px solid var(--color-accent);border-radius:50%;display:grid;place-items:center">
+          <div style="width:7px;height:7px;background:var(--color-accent);border-radius:50%"></div></div>
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:19px;letter-spacing:.01em">Fieldwork</span>
+      </div>
+      <div class="fw-topnav" style="display:flex;align-items:center;gap:28px">
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#start" class="btn btn-secondary" style="height:36px;font-size:13px">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div style="max-width:1120px;margin:0 auto;padding:78px 40px 64px;display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center">
+    <div>
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:18px;display:flex;align-items:center;gap:12px">
+        <span style="width:26px;height:1px;background:var(--color-accent)"></span>The internship season, in order</div>
+      <h1 style="font-size:64px;font-weight:400;line-height:1.03;letter-spacing:-.025em;margin:0 0 22px;text-wrap:pretty">The whole internship season, set on one&nbsp;page.</h1>
+      <p style="font-size:18px;line-height:1.65;color:color-mix(in srgb,var(--color-text) 62%,transparent);max-width:46ch;margin:0 0 32px">Discover roles matched to your résumé, track every application from applied to offer, and follow a prep schedule timed to your interviews — all in one quiet, well-kept ledger.</p>
+      <div style="display:flex;gap:14px;align-items:center">
+        <a href="#start" class="btn btn-primary" style="height:46px;font-size:15px;padding:0 24px" onClick="{{ goSignup }}">Create your account</a>
+        <a href="#features" class="fw-topnav" style="font-family:var(--font-heading);font-weight:600;font-size:15px;color:var(--color-text);text-decoration:none;display:inline-flex;align-items:center;gap:7px">See how it works
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent)" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </div>
+    </div>
+
+    <!-- LIVE SHOWCASE (dark colophon card) -->
+    <div style="background:#1a1815;color:#eae4da;border-radius:var(--radius-lg);padding:22px 24px;box-shadow:var(--shadow-lg);overflow:hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--color-accent-300);animation:fwPulse 2s ease-in-out infinite"></span>
+          <span style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);font-family:var(--font-heading);font-weight:600">{{ showcaseCaption }}</span>
+        </div>
+        <span style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#6b6459;font-family:var(--font-heading);font-weight:600">Live preview</span>
+      </div>
+      <div style="min-height:162px">
+        <sc-if value="{{ scene0 }}" hint-placeholder-val="{{ true }}">
+        <div class="fw-scene">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">
+            <div style="min-width:0">
+              <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#8a8175">Northwind Capital · Finance</div>
+              <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;color:#f4efe6;line-height:1.15;margin-top:2px">Quantitative Research Intern</div>
+            </div>
+            <div style="text-align:right;flex:none;animation:fwPop .5s .15s both">
+              <div style="font-family:var(--font-heading);font-size:32px;font-weight:600;line-height:1;color:var(--color-accent-300);font-feature-settings:'tnum'">88</div>
+              <div style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#8a8175;margin-top:1px">match</div>
+            </div>
+          </div>
+          <div style="height:5px;border-radius:3px;background:rgba(255,255,255,.08);margin:15px 0 16px;overflow:hidden">
+            <div style="height:100%;width:88%;background:var(--color-accent);border-radius:3px;transform-origin:left;animation:fwGrowX .8s .2s cubic-bezier(.2,.7,.3,1) both"></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="font-size:11px;color:#cfc6b8;border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:2px 10px;animation:fwPop .4s .35s both">Python</span>
+            <span style="font-size:11px;color:#cfc6b8;border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:2px 10px;animation:fwPop .4s .48s both">Statistics</span>
+            <span style="font-size:11px;color:#cfc6b8;border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:2px 10px;animation:fwPop .4s .61s both">SQL</span>
+            <span style="font-size:11px;color:var(--color-accent-300);border:1px solid rgba(182,130,53,.5);border-radius:9px;padding:2px 10px;animation:fwPop .4s .74s both">+2 more</span>
+          </div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ scene1 }}" hint-placeholder-val="{{ false }}">
+        <div class="fw-scene" style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;border:1px solid rgba(255,255,255,.09);border-radius:var(--radius-md);animation:fwRise .45s .05s both">
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:14px;color:#f4efe6">Meridian Design Co.</div>
+            <span style="font-size:10px;color:#1a1815;background:var(--color-accent-300);border-radius:9px;padding:2px 9px;display:inline-flex;align-items:center;gap:4px;animation:fwPop .45s .5s both">
+              <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Offer</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;border:1px solid rgba(255,255,255,.09);border-radius:var(--radius-md);animation:fwRise .45s .16s both">
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:14px;color:#f4efe6">Northwind Capital</div>
+            <span style="font-size:10px;color:var(--color-accent-300);border:1px solid rgba(182,130,53,.55);border-radius:9px;padding:2px 9px;animation:fwPop .45s .62s both">Interviewing</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 13px;border:1px solid rgba(255,255,255,.09);border-radius:var(--radius-md);animation:fwRise .45s .27s both">
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:14px;color:#f4efe6">Atlas Logistics</div>
+            <span style="font-size:10px;color:#b2aa9d;border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:2px 9px">Applied</span>
+          </div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ scene2 }}" hint-placeholder-val="{{ false }}">
+        <div class="fw-scene">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:14px;color:#f4efe6">This week</span>
+            <span style="font-size:11px;color:var(--color-accent-300);font-feature-settings:'tnum'">12h prep scheduled</span>
+          </div>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:7px;height:66px">
+            <sc-for list="{{ prepBars }}" as="bar" hint-placeholder-count="7">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end">
+                <div style="width:100%;height:{{ bar.h }};border-radius:3px 3px 0 0;background:{{ bar.color }};transform-origin:bottom;animation:fwGrowY .55s {{ bar.delay }} cubic-bezier(.2,.7,.3,1) both"></div>
+                <span style="font-size:9px;color:{{ bar.labelColor }};font-family:var(--font-heading);font-weight:600">{{ bar.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;margin-top:14px;padding:8px 11px;border-left:2px solid var(--color-accent);background:rgba(182,130,53,.1);border-radius:2px;animation:fwCaret .5s .6s both">
+            <span style="font-size:11.5px;color:#f4efe6">Thu — Northwind onsite prep</span>
+            <span style="font-size:10px;color:#8a8175;margin-left:auto;font-feature-settings:'tnum'">3h</span>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+      <div style="display:flex;gap:20px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.09)">
+        <button class="fw-ind" onClick="{{ setScene0 }}" style="background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:{{ ind0Color }}">Sourcing</button>
+        <button class="fw-ind" onClick="{{ setScene1 }}" style="background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:{{ ind1Color }}">Tracking</button>
+        <button class="fw-ind" onClick="{{ setScene2 }}" style="background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:{{ ind2Color }}">Preparation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS BAND -->
+  <div style="border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);background:var(--color-surface)">
+    <div class="fw-reveal" style="max-width:1120px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:repeat(4,1fr)">
+      <div style="padding:30px 24px;text-align:center">
+        <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1">1,240</div>
+        <div style="font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin-top:6px">roles indexed</div></div>
+      <div style="padding:30px 24px;text-align:center;border-left:1px solid var(--color-divider)">
+        <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1">40+</div>
+        <div style="font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin-top:6px">industries</div></div>
+      <div style="padding:30px 24px;text-align:center;border-left:1px solid var(--color-divider)">
+        <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1;color:var(--color-accent-700)">3</div>
+        <div style="font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin-top:6px">match tiers</div></div>
+      <div style="padding:30px 24px;text-align:center;border-left:1px solid var(--color-divider)">
+        <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1">1</div>
+        <div style="font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin-top:6px">ledger for it all</div></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div id="features" style="max-width:1120px;margin:0 auto;padding:20px 40px 0;scroll-margin-top:80px">
+
+    <!-- Feature 1 — Sourcing -->
+    <div class="fw-reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding:70px 0;border-bottom:1px solid var(--color-divider)">
+      <div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:14px">01 · Sourcing</div>
+        <h2 style="font-size:38px;font-weight:400;letter-spacing:-.02em;margin:0 0 16px;line-height:1.1">Roles scored against your&nbsp;résumé.</h2>
+        <p style="font-size:16px;line-height:1.7;color:color-mix(in srgb,var(--color-text) 62%,transparent);margin:0 0 20px;max-width:44ch">Every posting is read against your skills and interests and sorted into Good Fit, Stretch, and Long Shot — so you spend your hours on the roles that actually fit, and reach only where it's worth reaching.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>A plain-English reason behind every score</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Filter by location, skill, company, and salary</div>
+        </div>
+      </div>
+      <div class="fw-lift" style="border:1px solid var(--color-divider);border-radius:var(--radius-lg);padding:22px 24px;background:var(--color-bg);box-shadow:var(--shadow-sm)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">
+          <div><div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">Northwind Capital · Finance</div>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:21px;margin-top:2px">Quantitative Research Intern</div></div>
+          <div class="anim-pop" style="text-align:right;flex:none;animation-delay:.2s"><div style="font-family:var(--font-heading);font-size:30px;font-weight:600;line-height:1;color:var(--color-accent-700);font-feature-settings:'tnum'">88</div>
+            <div style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 50%,transparent)">match</div></div>
+        </div>
+        <div style="height:6px;border-radius:3px;background:var(--color-surface);margin:16px 0;overflow:hidden">
+          <div class="anim-x" style="height:100%;width:88%;background:var(--color-accent);border-radius:3px"></div></div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          <span class="tag tag-neutral anim-pop" style="animation-delay:.35s">Python</span>
+          <span class="tag tag-neutral anim-pop" style="animation-delay:.45s">Statistics</span>
+          <span class="tag tag-neutral anim-pop" style="animation-delay:.55s">SQL</span>
+          <span class="tag tag-outline anim-pop" style="animation-delay:.65s">+2 more</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 2 — Tracking -->
+    <div class="fw-reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding:70px 0;border-bottom:1px solid var(--color-divider)">
+      <div class="fw-lift" style="border:1px solid var(--color-divider);border-radius:var(--radius-lg);padding:8px;background:var(--color-bg);box-shadow:var(--shadow-sm);order:0">
+        <table class="table" style="margin:0"><thead><tr><th style="padding-left:14px">Company</th><th>Status</th><th style="text-align:right;padding-right:14px">Applied</th></tr></thead>
+          <tbody>
+            <tr class="anim-pop" style="animation-delay:.15s"><td style="padding-left:14px;font-family:var(--font-heading);font-weight:600">Meridian Design</td><td><span class="tag tag-accent-2">Offer</span></td><td style="text-align:right;padding-right:14px;font-size:13px">Jun 10</td></tr>
+            <tr class="anim-pop" style="animation-delay:.28s"><td style="padding-left:14px;font-family:var(--font-heading);font-weight:600">Northwind Capital</td><td><span class="tag tag-accent">Interviewing</span></td><td style="text-align:right;padding-right:14px;font-size:13px">Jun 28</td></tr>
+            <tr class="anim-pop" style="animation-delay:.41s"><td style="padding-left:14px;font-family:var(--font-heading);font-weight:600">Helios Bio</td><td><span class="tag tag-neutral">Applied</span></td><td style="text-align:right;padding-right:14px;font-size:13px">Jul 05</td></tr>
+            <tr class="anim-pop" style="animation-delay:.54s"><td style="padding-left:14px;font-family:var(--font-heading);font-weight:600">Vireo Media</td><td><span class="tag tag-outline">Rejected</span></td><td style="text-align:right;padding-right:14px;font-size:13px">May 30</td></tr>
+          </tbody></table>
+      </div>
+      <div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:14px">02 · Tracking</div>
+        <h2 style="font-size:38px;font-weight:400;letter-spacing:-.02em;margin:0 0 16px;line-height:1.1">One ledger, applied to&nbsp;offer.</h2>
+        <p style="font-size:16px;line-height:1.7;color:color-mix(in srgb,var(--color-text) 62%,transparent);margin:0 0 20px;max-width:44ch">Log every application in a single table, expand any row for notes and interview dates, and watch the season move from applied to interviewing to offer without a spreadsheet in sight.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Sort and filter by status, company, or date</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Notes and interviews kept beside each role</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3 — Preparation -->
+    <div class="fw-reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding:70px 0">
+      <div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:14px">03 · Preparation</div>
+        <h2 style="font-size:38px;font-weight:400;letter-spacing:-.02em;margin:0 0 16px;line-height:1.1">Prep, timed to your&nbsp;interviews.</h2>
+        <p style="font-size:16px;line-height:1.7;color:color-mix(in srgb,var(--color-text) 62%,transparent);margin:0 0 20px;max-width:44ch">A calendar builds itself backward from each interview date and forward from the hours you have, so the week before a big onsite fills with exactly the right practice — and you can check it off as you go.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Month, week, and list views</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Add your own tasks and snooze what slips</div>
+        </div>
+      </div>
+      <div class="fw-lift" style="border:1px solid var(--color-divider);border-radius:var(--radius-lg);padding:22px 24px;background:var(--color-bg);box-shadow:var(--shadow-sm)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+          <span style="font-family:var(--font-heading);font-weight:600;font-size:15px">This week</span>
+          <span style="font-size:13px;color:var(--color-accent-700);font-feature-settings:'tnum'">12h prep scheduled</span></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:9px;height:90px">
+          <sc-for list="{{ prepBarsLight }}" as="bar" hint-placeholder-count="7">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end">
+              <div class="anim-y" style="width:100%;height:{{ bar.h }};border-radius:3px 3px 0 0;background:{{ bar.color }};animation-delay:{{ bar.delay }}"></div>
+              <span style="font-size:10px;color:{{ bar.labelColor }};font-family:var(--font-heading);font-weight:600">{{ bar.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div class="anim-pop" style="display:flex;align-items:center;gap:8px;margin-top:16px;padding:9px 12px;border-left:2px solid var(--color-accent);background:var(--color-accent-100);border-radius:2px;animation-delay:.6s">
+          <span style="font-size:13px">Thu — Northwind onsite prep</span>
+          <span style="font-size:11px;color:color-mix(in srgb,var(--color-text) 55%,transparent);margin-left:auto;font-feature-settings:'tnum'">3h</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div id="how" style="background:var(--color-surface);border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);scroll-margin-top:80px">
+    <div style="max-width:1120px;margin:0 auto;padding:64px 40px">
+      <div class="fw-reveal" style="text-align:center;margin-bottom:48px">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:12px">The method</div>
+        <h2 style="font-size:40px;font-weight:400;letter-spacing:-.02em;margin:0">Three steps, start to offer.</h2>
+      </div>
+      <div class="fw-reveal" style="display:grid;grid-template-columns:repeat(3,1fr)">
+        <div style="padding:0 34px">
+          <div style="font-family:var(--font-heading);font-size:56px;font-weight:400;line-height:1;color:var(--color-accent);opacity:.35;font-feature-settings:'tnum';margin-bottom:16px">01</div>
+          <h3 style="font-size:22px;font-weight:600;margin:0 0 10px">Upload your résumé</h3>
+          <p style="font-size:15px;line-height:1.7;color:color-mix(in srgb,var(--color-text) 62%,transparent);margin:0">We read your skills and interests and turn them into a match profile that scores every role you see.</p>
+        </div>
+        <div style="padding:0 34px;border-left:1px solid var(--color-divider)">
+          <div style="font-family:var(--font-heading);font-size:56px;font-weight:400;line-height:1;color:var(--color-accent);opacity:.35;font-feature-settings:'tnum';margin-bottom:16px">02</div>
+          <h3 style="font-size:22px;font-weight:600;margin:0 0 10px">Apply and log</h3>
+          <p style="font-size:15px;line-height:1.7;color:color-mix(in srgb,var(--color-text) 62%,transparent);margin:0">Send applications and record them in one place — one click straight from a recommendation into your ledger.</p>
+        </div>
+        <div style="padding:0 34px;border-left:1px solid var(--color-divider)">
+          <div style="font-family:var(--font-heading);font-size:56px;font-weight:400;line-height:1;color:var(--color-accent);opacity:.35;font-feature-settings:'tnum';margin-bottom:16px">03</div>
+          <h3 style="font-size:22px;font-weight:600;margin:0 0 10px">Prepare and land it</h3>
+          <p style="font-size:15px;line-height:1.7;color:color-mix(in srgb,var(--color-text) 62%,transparent);margin:0">A prep calendar times your practice to each interview, so you walk in ready and walk out with an offer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLOPHON QUOTE -->
+  <div style="background:#1a1815;color:#eae4da;position:relative;overflow:hidden">
+    <div class="fw-reveal" style="max-width:900px;margin:0 auto;padding:80px 40px;text-align:center;position:relative">
+      <div style="font-family:var(--font-heading);font-size:120px;line-height:.6;color:var(--color-accent);opacity:.22;margin-bottom:8px">“</div>
+      <p style="font-family:var(--font-heading);font-size:32px;font-weight:400;line-height:1.35;color:#f4efe6;letter-spacing:-.01em;margin:0 0 24px;font-style:italic;text-wrap:pretty">I stopped losing track of deadlines the week I started using it. The whole season finally felt like something I could hold in one hand.</p>
+      <div style="width:36px;height:1px;background:var(--color-accent);margin:0 auto 16px"></div>
+      <div style="font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#b2aa9d">A junior, computer science · class of 2027</div>
+    </div>
+  </div>
+
+  <!-- START (AUTH) -->
+  <div id="start" style="scroll-margin-top:80px;border-bottom:1px solid var(--color-divider)">
+    <div class="fw-reveal" style="max-width:1120px;margin:0 auto;padding:80px 40px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+      <div>
+        <div style="width:44px;height:1px;background:var(--color-accent);margin-bottom:22px"></div>
+        <h2 style="font-size:46px;font-weight:400;letter-spacing:-.02em;line-height:1.06;margin:0 0 18px">Start your season.</h2>
+        <p style="font-size:17px;line-height:1.65;color:color-mix(in srgb,var(--color-text) 62%,transparent);max-width:40ch;margin:0">Discovery, tracking, and prep in one quiet, well-kept place. Free while you're in school.</p>
+      </div>
+      <div style="border:1px solid var(--color-divider);border-radius:var(--radius-lg);padding:36px;background:var(--color-bg);box-shadow:var(--shadow-md)">
+        <form onSubmit="{{ onLogin }}">
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:8px">{{ authKicker }}</div>
+          <h3 style="font-size:28px;font-weight:600;margin:0 0 22px">{{ authTitle }}</h3>
+          <div class="field" style="margin-bottom:16px"><label>Email</label>
+            <input class="input" type="email" value="you@university.edu" autocomplete="email"></div>
+          <div class="field" style="margin-bottom:16px"><label>Password</label>
+            <input class="input" type="password" value="••••••••"></div>
+          <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+            <div class="field" style="margin-bottom:16px"><label>Confirm password</label>
+              <input class="input" type="password" value="••••••••"></div>
+          </sc-if>
+          <button class="btn btn-primary btn-block" type="submit" style="height:44px;margin-top:8px">{{ authCta }}</button>
+          <div class="hr" style="margin:20px 0"></div>
+          <p class="text-muted" style="font-size:13px;text-align:center;margin:0">
+            {{ authSwitchText }} <a href="#" onClick="{{ onToggleAuth }}" style="font-family:var(--font-heading);font-weight:600">{{ authSwitchLink }}</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="max-width:1120px;margin:0 auto;padding:28px 40px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:18px;height:18px;border:1.5px solid var(--color-accent);border-radius:50%;display:grid;place-items:center"><div style="width:6px;height:6px;background:var(--color-accent);border-radius:50%"></div></div>
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:16px">Fieldwork</span>
+    </div>
+    <span style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 50%,transparent)">Sourcing · Tracking · Preparation</span>
+  </div>
+
+</div>
+</sc-if>
+
+<!-- ══════════ APP SHELL ══════════ -->
+<sc-if value="{{ isAuthed }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;min-height:100vh">
+  <!-- Sidebar -->
+  <aside style="width:250px;flex:none;border-right:1px solid var(--color-divider);background:var(--color-bg);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:26px 0">
+    <div style="padding:0 24px 22px;display:flex;align-items:center;gap:10px">
+      <div style="width:26px;height:26px;border:1.5px solid var(--color-accent);border-radius:50%;display:grid;place-items:center">
+        <div style="width:8px;height:8px;background:var(--color-accent);border-radius:50%"></div>
+      </div>
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:20px;letter-spacing:.01em">Fieldwork</span>
+    </div>
+    <div class="hr" style="margin:0 0 14px"></div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding-right:12px">
+      <button data-navitem data-active="{{ navDash }}" onClick="{{ goDash }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</button>
+      <button data-navitem data-active="{{ navFind }}" onClick="{{ goFind }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Find Internships</button>
+      <button data-navitem data-active="{{ navApps }}" onClick="{{ goApps }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>My Applications</button>
+      <button data-navitem data-active="{{ navCal }}" onClick="{{ goCal }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prep Calendar</button>
+      <button data-navitem data-active="{{ navResume }}" onClick="{{ goResume }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>Résumé</button>
+    </nav>
+    <div style="margin-top:auto;padding:0 12px">
+      <div class="hr" style="margin:0 0 12px"></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:0 12px 12px">
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--color-surface);border:1px solid var(--color-divider);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:14px;color:var(--color-accent)">SC</div>
+        <div style="line-height:1.25"><div style="font-size:13px;font-weight:600;font-family:var(--font-heading)">Spandan C.</div><div class="text-muted" style="font-size:11px">Junior · CS</div></div>
+      </div>
+      <button data-navitem onClick="{{ onLogout }}" style="border-radius:var(--radius-md)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main style="flex:1;min-width:0;padding:{{ mainPad }}">
+
+    <!-- DASHBOARD -->
+    <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+    <div class="fw-fade" style="max-width:1060px;margin:0 auto">
+      <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent);margin-bottom:8px">{{ todayLabel }}</div>
+      <h1 style="font-size:44px;font-weight:400;letter-spacing:-.02em;margin:0 0 6px">Good afternoon, Spandan.</h1>
+      <p class="text-muted" style="font-size:16px;margin:0 0 32px">You have <strong style="color:var(--color-text);font-weight:600">{{ upcomingInterviewCount }} interviews</strong> coming up and <strong style="color:var(--color-text);font-weight:600">{{ prepThisWeek }}h</strong> of prep scheduled this week.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--color-divider);border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden;margin-bottom:38px">
+        <div style="background:var(--color-bg);padding:22px 24px">
+          <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1">{{ statApps }}</div>
+          <div class="text-muted" style="font-size:12.5px;margin-top:4px">Applications</div></div>
+        <div style="background:var(--color-bg);padding:22px 24px">
+          <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1">{{ statInterviews }}</div>
+          <div class="text-muted" style="font-size:12.5px;margin-top:4px">Interviewing</div></div>
+        <div style="background:var(--color-bg);padding:22px 24px">
+          <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1;color:var(--color-accent-700)">{{ statGoodFit }}</div>
+          <div class="text-muted" style="font-size:12.5px;margin-top:4px">Good-fit roles</div></div>
+        <div style="background:var(--color-bg);padding:22px 24px">
+          <div style="font-family:var(--font-heading);font-size:40px;font-weight:400;font-feature-settings:'tnum';line-height:1">{{ statOffers }}</div>
+          <div class="text-muted" style="font-size:12.5px;margin-top:4px">Offers</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:36px">
+        <div>
+          <h3 style="font-size:15px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 16px">Continue where you left off</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <button class="card elev-sm" onClick="{{ goFind }}" style="text-align:left;cursor:pointer;align-items:flex-start;background:var(--color-bg)">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+              <div class="card-title">Find internships</div>
+              <p class="card-body">{{ statGoodFit }} good-fit roles matched to your résumé this week.</p></button>
+            <button class="card elev-sm" onClick="{{ goApps }}" style="text-align:left;cursor:pointer;align-items:flex-start;background:var(--color-bg)">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              <div class="card-title">Track applications</div>
+              <p class="card-body">{{ statApps }} logged. {{ statInterviews }} awaiting or in interviews.</p></button>
+            <button class="card elev-sm" onClick="{{ goCal }}" style="text-align:left;cursor:pointer;align-items:flex-start;background:var(--color-bg)">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <div class="card-title">Prep calendar</div>
+              <p class="card-body">{{ prepThisWeek }}h scheduled this week across your interviews.</p></button>
+            <button class="card elev-sm" onClick="{{ goResume }}" style="text-align:left;cursor:pointer;align-items:flex-start;background:var(--color-bg)">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--color-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <div class="card-title">Résumé</div>
+              <p class="card-body">{{ resumeCount }} versions on file. Recommendations use your active one.</p></button>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:15px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 16px">Next up</h3>
+          <div class="card" style="background:var(--color-bg);gap:0;padding:0">
+            <sc-for list="{{ agenda }}" as="item" hint-placeholder-count="4">
+              <div style="display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--color-divider)">
+                <div style="text-align:center;flex:none;width:38px">
+                  <div style="font-family:var(--font-heading);font-size:20px;font-weight:600;line-height:1;font-feature-settings:'tnum'">{{ item.day }}</div>
+                  <div class="text-muted" style="font-size:10px;text-transform:uppercase;letter-spacing:.06em">{{ item.mon }}</div></div>
+                <div style="min-width:0">
+                  <div style="font-family:var(--font-heading);font-weight:600;font-size:14.5px;line-height:1.2">{{ item.title }}</div>
+                  <div class="text-muted" style="font-size:12px;margin-top:2px">{{ item.sub }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- FIND INTERNSHIPS -->
+    <sc-if value="{{ isFind }}" hint-placeholder-val="{{ false }}">
+    <div class="fw-fade" style="max-width:1060px;margin:0 auto">
+      <h1 style="font-size:40px;font-weight:400;letter-spacing:-.02em;margin:0 0 4px">Find Internships</h1>
+      <p class="text-muted" style="font-size:15px;margin:0 0 26px">Personalised recommendations, scored against your active résumé and interests.</p>
+
+      <!-- filters -->
+      <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;padding:16px 18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);margin-bottom:22px">
+        <div class="field" style="flex:1;min-width:150px;margin:0"><label>Location</label>
+          <select class="input" value="{{ filters.location }}" onChange="{{ onFilterLocation }}">
+            <option value="">All locations</option>
+            <sc-for list="{{ locationOptions }}" as="loc" hint-placeholder-count="4"><option value="{{ loc }}">{{ loc }}</option></sc-for>
+          </select></div>
+        <div class="field" style="flex:1;min-width:150px;margin:0"><label>Skill</label>
+          <select class="input" value="{{ filters.skill }}" onChange="{{ onFilterSkill }}">
+            <option value="">Any skill</option>
+            <sc-for list="{{ skillOptions }}" as="sk" hint-placeholder-count="6"><option value="{{ sk }}">{{ sk }}</option></sc-for>
+          </select></div>
+        <div class="field" style="flex:1;min-width:150px;margin:0"><label>Company</label>
+          <input class="input" placeholder="Search company" value="{{ filters.company }}" onInput="{{ onFilterCompany }}"></div>
+        <div class="field" style="flex:1;min-width:150px;margin:0"><label>Sort by</label>
+          <select class="input" value="{{ filters.sort }}" onChange="{{ onFilterSort }}">
+            <option value="score">Match score</option><option value="date">Most recent</option>
+            <option value="salary">Salary</option><option value="company">Company</option>
+          </select></div>
+      </div>
+
+      <!-- tabs -->
+      <div style="display:flex;gap:28px;border-bottom:1px solid var(--color-divider);margin-bottom:24px">
+        <button data-tabbtn data-active="{{ tabGood }}" onClick="{{ setTabGood }}">Good Fit <span style="font-size:11px;background:var(--color-accent-100);color:var(--color-accent-800);padding:2px 8px;border-radius:9px;font-feature-settings:'tnum'">{{ goodFitCount }}</span></button>
+        <button data-tabbtn data-active="{{ tabStretch }}" onClick="{{ setTabStretch }}">Stretch <span style="font-size:11px;background:var(--color-neutral-100);color:var(--color-neutral-800);padding:2px 8px;border-radius:9px;font-feature-settings:'tnum'">{{ stretchCount }}</span></button>
+        <button data-tabbtn data-active="{{ tabLong }}" onClick="{{ setTabLong }}">Long Shot <span style="font-size:11px;border:1px solid var(--color-divider);padding:1px 7px;border-radius:9px;font-feature-settings:'tnum'">{{ longShotCount }}</span></button>
+      </div>
+
+      <sc-if value="{{ noRecs }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:60px 20px;border:1px dashed var(--color-divider);border-radius:var(--radius-md)">
+          <p class="text-muted" style="margin:0">No roles match your filters in this tier. Try widening the filters.</p></div>
+      </sc-if>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ recs }}" as="rec" hint-placeholder-count="4">
+          <div class="card elev-sm" style="background:var(--color-bg);gap:0;padding:0;overflow:hidden">
+            <div style="padding:20px 22px">
+              <div style="display:flex;justify-content:space-between;gap:20px;align-items:flex-start">
+                <div style="min-width:0">
+                  <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent)">{{ rec.company }} · {{ rec.industry }}</div>
+                  <h3 style="font-size:23px;font-weight:600;margin:3px 0 0;letter-spacing:-.01em">{{ rec.roleTitle }}</h3>
+                </div>
+                <div style="flex:none;text-align:right">
+                  <div style="font-family:var(--font-heading);font-size:30px;font-weight:600;line-height:1;color:{{ rec.scoreColor }};font-feature-settings:'tnum'">{{ rec.score }}</div>
+                  <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 50%,transparent);margin-top:2px">match</div>
+                </div>
+              </div>
+              <p style="font-size:14px;margin:12px 0 14px;max-width:62ch">{{ rec.reason }}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:18px;font-size:12.5px;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin-bottom:14px">
+                <span style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>{{ rec.location }}</span>
+                <span style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>{{ rec.salaryText }}</span>
+                <span style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>Posted {{ rec.postedText }}</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;color:var(--color-accent-700)">Deadline {{ rec.deadlineText }}</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px">
+                <sc-for list="{{ rec.skills }}" as="sk" hint-placeholder-count="4"><span class="tag tag-neutral">{{ sk }}</span></sc-for>
+              </div>
+              <div style="display:flex;gap:10px">
+                <button class="btn btn-secondary" onClick="{{ rec.onToggle }}">{{ rec.toggleLabel }}</button>
+                <button class="btn btn-primary" onClick="{{ rec.onLog }}">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>{{ rec.logLabel }}</button>
+              </div>
+            </div>
+            <sc-if value="{{ rec.expanded }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--color-surface);border-top:1px solid var(--color-divider);padding:18px 22px">
+                <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 8px">The posting</h4>
+                <p style="font-size:13.5px;line-height:1.65;margin:0;max-width:70ch;text-align:justify">{{ rec.description }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- APPLICATIONS -->
+    <sc-if value="{{ isApps }}" hint-placeholder-val="{{ false }}">
+    <div class="fw-fade" style="max-width:1060px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;gap:20px">
+        <div><h1 style="font-size:40px;font-weight:400;letter-spacing:-.02em;margin:0 0 4px">My Applications</h1>
+          <p class="text-muted" style="font-size:15px;margin:0">{{ appCountLabel }}</p></div>
+        <button class="btn btn-primary" onClick="{{ openAddApp }}" style="height:40px">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Log application</button>
+      </div>
+
+      <div style="display:flex;gap:14px;margin-bottom:14px">
+        <div class="field" style="margin:0"><label>Status</label>
+          <select class="input" value="{{ appFilter }}" onChange="{{ onAppFilter }}" style="min-width:150px">
+            <option value="all">All statuses</option><option value="applied">Applied</option>
+            <option value="interviewing">Interviewing</option><option value="offer">Offer</option>
+            <option value="rejected">Rejected</option><option value="accepted">Accepted</option>
+          </select></div>
+        <div class="field" style="margin:0"><label>Sort by</label>
+          <select class="input" value="{{ appSort }}" onChange="{{ onAppSort }}" style="min-width:150px">
+            <option value="date">Date applied</option><option value="company">Company</option><option value="status">Status</option>
+          </select></div>
+      </div>
+
+      <div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden">
+        <table class="table">
+          <thead><tr><th style="padding-left:20px">Company</th><th>Role</th><th>Status</th><th>Applied</th><th style="text-align:right;padding-right:20px">Actions</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ apps }}" as="app" hint-placeholder-count="4">
+              <tr>
+                <td style="padding-left:20px">
+                  <button onClick="{{ app.onToggle }}" style="background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-heading);font-weight:600;font-size:14.5px;color:var(--color-text)">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--color-accent)" stroke-width="2" style="transform:{{ app.caretRotate }};transition:transform .15s"><polyline points="9 18 15 12 9 6"/></svg>{{ app.company }}</button>
+                </td>
+                <td style="font-size:13.5px">{{ app.role }}</td>
+                <td><span class="{{ app.statusClass }}">{{ app.statusLabel }}</span></td>
+                <td style="font-size:13px"><div>{{ app.appliedText }}</div><div class="text-muted" style="font-size:11px">{{ app.relText }}</div></td>
+                <td style="text-align:right;padding-right:20px">
+                  <button class="btn btn-ghost" onClick="{{ app.onEdit }}" style="font-size:12px">Edit</button>
+                  <button class="btn btn-ghost" onClick="{{ app.onDelete }}" style="font-size:12px;color:var(--color-neutral-600)">Delete</button>
+                </td>
+              </tr>
+              <sc-if value="{{ app.expanded }}" hint-placeholder-val="{{ false }}">
+                <tr><td colspan="5" style="background:var(--color-surface);padding:18px 20px">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
+                    <div><h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 6px">Notes</h4>
+                      <p style="font-size:13px;margin:0;line-height:1.6">{{ app.notes }}</p></div>
+                    <div><h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 6px">Interviews</h4>
+                      <p style="font-size:13px;margin:0;line-height:1.6">{{ app.interviewText }}</p>
+                      <div class="text-muted" style="font-size:11px;margin-top:10px">Updated {{ app.updatedText }}</div></div>
+                  </div>
+                </td></tr>
+              </sc-if>
+            </sc-for>
+          </tbody>
+        </table>
+        <sc-if value="{{ noApps }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:50px 20px"><p class="text-muted" style="margin:0">No applications in this view. Log one to get started.</p></div>
+        </sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- CALENDAR -->
+    <sc-if value="{{ isCal }}" hint-placeholder-val="{{ false }}">
+    <div class="fw-fade" style="max-width:1060px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;gap:20px">
+        <div><h1 style="font-size:40px;font-weight:400;letter-spacing:-.02em;margin:0 0 4px">Prep Calendar</h1>
+          <p class="text-muted" style="font-size:15px;margin:0">A schedule built from your interview dates and available hours.</p></div>
+        <button class="btn btn-primary" onClick="{{ openAddTask }}" style="height:40px">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add task</button>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:14px">
+          <button class="btn btn-icon btn-secondary" onClick="{{ calPrev }}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <h2 style="font-size:26px;font-weight:600;margin:0;min-width:200px;text-align:center">{{ calLabel }}</h2>
+          <button class="btn btn-icon btn-secondary" onClick="{{ calNext }}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="seg">
+          <label class="seg-opt"><input type="radio" name="calview" checked="{{ calMonthly }}" onChange="{{ setCalMonthly }}">Month</label>
+          <label class="seg-opt"><input type="radio" name="calview" checked="{{ calWeekly }}" onChange="{{ setCalWeekly }}">Week</label>
+          <label class="seg-opt"><input type="radio" name="calview" checked="{{ calList }}" onChange="{{ setCalListView }}">List</label>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:18px;font-size:12px;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin-bottom:14px">
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:2px;background:var(--color-accent)"></span>Interview prep</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:2px;background:var(--color-neutral-500)"></span>General prep</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:2px;border:1.5px solid var(--color-accent)"></span>Custom</span>
+      </div>
+
+      <!-- MONTH -->
+      <sc-if value="{{ calMonthly }}" hint-placeholder-val="{{ true }}">
+        <div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);background:var(--color-surface)">
+            <sc-for list="{{ weekdayNames }}" as="wd" hint-placeholder-count="7">
+              <div style="padding:9px;text-align:center;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,var(--color-text) 55%,transparent);border-bottom:1px solid var(--color-divider)">{{ wd }}</div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ calWeeks }}" as="week" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:repeat(7,1fr)">
+              <sc-for list="{{ week }}" as="cell" hint-placeholder-count="7">
+                <div style="min-height:104px;padding:6px 7px;border-right:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);background:{{ cell.bg }}">
+                  <div style="font-family:var(--font-heading);font-size:13px;font-weight:600;font-feature-settings:'tnum';color:{{ cell.dayColor }};margin-bottom:4px">{{ cell.day }}</div>
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <sc-for list="{{ cell.events }}" as="ev" hint-placeholder-count="2">
+                      <button onClick="{{ ev.onOpen }}" title="{{ ev.title }}" style="text-align:left;cursor:pointer;font-size:10.5px;line-height:1.25;padding:3px 6px;border:0;border-left:2px solid {{ ev.accent }};border-radius:2px;background:{{ ev.chipBg }};color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;{{ ev.strike }}">{{ ev.title }}</button>
+                    </sc-for>
+                    <sc-if value="{{ cell.hasMore }}" hint-placeholder-val="{{ false }}"><div class="text-muted" style="font-size:10px;padding-left:6px">{{ cell.moreLabel }}</div></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- WEEK -->
+      <sc-if value="{{ calWeekly }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:14px">Prep intensity · {{ weekTotalLabel }}</span>
+            <span style="font-size:12.5px;color:var(--color-accent-700);font-weight:600">{{ intensityLabel }}</span></div>
+          <div style="height:8px;border-radius:4px;background:var(--color-surface);overflow:hidden">
+            <div style="height:100%;width:{{ intensityPct }};background:var(--color-accent);border-radius:4px"></div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px">
+          <sc-for list="{{ weekCells }}" as="cell" hint-placeholder-count="7">
+            <div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);padding:10px 9px;min-height:170px;background:{{ cell.bg }}">
+              <div style="text-align:center;margin-bottom:8px">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:color-mix(in srgb,var(--color-text) 55%,transparent)">{{ cell.wd }}</div>
+                <div style="font-family:var(--font-heading);font-weight:600;font-size:17px;font-feature-settings:'tnum';color:{{ cell.dayColor }}">{{ cell.day }}</div></div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <sc-for list="{{ cell.events }}" as="ev" hint-placeholder-count="2">
+                  <button onClick="{{ ev.onOpen }}" style="text-align:left;cursor:pointer;font-size:10.5px;line-height:1.3;padding:4px 6px;border:0;border-left:2px solid {{ ev.accent }};border-radius:2px;background:{{ ev.chipBg }};color:var(--color-text);{{ ev.strike }}">{{ ev.title }}</button>
+                </sc-for>
+              </div>
+              <div style="text-align:center;font-size:11px;font-weight:600;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin-top:8px;padding-top:6px;border-top:1px solid var(--color-divider)">{{ cell.hours }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- LIST -->
+      <sc-if value="{{ calList }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden">
+          <table class="table"><thead><tr><th style="width:44px;padding-left:20px"></th><th>Task</th><th>Due</th><th>Type</th><th>Hours</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ listEvents }}" as="ev" hint-placeholder-count="6">
+                <tr>
+                  <td style="padding-left:20px"><input type="checkbox" checked="{{ ev.completed }}" onChange="{{ ev.onToggle }}" style="width:16px;height:16px;accent-color:var(--color-accent);cursor:pointer"></td>
+                  <td><button onClick="{{ ev.onOpen }}" style="background:none;border:0;cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--color-text);text-align:left;{{ ev.strike }}">{{ ev.title }}</button></td>
+                  <td style="font-size:13px">{{ ev.dueText }}</td>
+                  <td><span class="{{ ev.typeClass }}">{{ ev.typeLabel }}</span></td>
+                  <td style="font-size:13px;font-feature-settings:'tnum'">{{ ev.hours }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </sc-if>
+    </div>
+    </sc-if>
+
+    <!-- RESUME -->
+    <sc-if value="{{ isResume }}" hint-placeholder-val="{{ false }}">
+    <div class="fw-fade" style="max-width:1060px;margin:0 auto">
+      <h1 style="font-size:40px;font-weight:400;letter-spacing:-.02em;margin:0 0 4px">Résumé</h1>
+      <p class="text-muted" style="font-size:15px;margin:0 0 28px">Your active résumé drives every recommendation. Upload a new version any time.</p>
+
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:32px">
+        <div>
+          <div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);padding:24px;margin-bottom:24px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+              <div style="display:flex;gap:14px;align-items:center">
+                <div style="width:44px;height:54px;border:1px solid var(--color-divider);border-radius:3px;display:grid;place-items:center;background:var(--color-surface)">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--color-accent)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                <div><div style="font-family:var(--font-heading);font-weight:600;font-size:17px">{{ activeResume.name }}</div>
+                  <div class="text-muted" style="font-size:12.5px">Active · uploaded {{ activeResume.uploadedText }}</div></div>
+              </div>
+              <span class="tag tag-accent">Active</span>
+            </div>
+            <div class="hr" style="margin:0 0 18px"></div>
+            <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 10px">Extracted skills</h4>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px">
+              <sc-for list="{{ activeResume.skills }}" as="sk" hint-placeholder-count="7"><span class="tag tag-neutral">{{ sk }}</span></sc-for></div>
+            <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 10px">Interests</h4>
+            <div style="display:flex;flex-wrap:wrap;gap:7px">
+              <sc-for list="{{ activeResume.interests }}" as="it" hint-placeholder-count="4"><span class="tag tag-outline">{{ it }}</span></sc-for></div>
+          </div>
+
+          <label style="display:block;border:1px dashed var(--color-divider);border-radius:var(--radius-md);padding:34px;text-align:center;cursor:pointer" onClick="{{ onUpload }}">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="var(--color-accent)" stroke-width="1.5" style="margin-bottom:10px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:15px;margin-bottom:3px">Upload a new version</div>
+            <div class="text-muted" style="font-size:12.5px">PDF or DOCX, up to 10 MB. We'll re-run your recommendations.</div>
+          </label>
+        </div>
+
+        <div>
+          <h3 style="font-size:15px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:color-mix(in srgb,var(--color-text) 60%,transparent);margin:0 0 16px">Version history</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ resumeVersions }}" as="rv" hint-placeholder-count="3">
+              <div style="border:1px solid {{ rv.borderColor }};border-radius:var(--radius-md);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+                <div style="min-width:0"><div style="font-family:var(--font-heading);font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rv.name }}</div>
+                  <div class="text-muted" style="font-size:11.5px">{{ rv.uploadedText }}</div></div>
+                <sc-if value="{{ rv.isActive }}" hint-placeholder-val="{{ true }}"><span class="tag tag-accent" style="flex:none">Active</span></sc-if>
+                <sc-if value="{{ rv.notActive }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ rv.onActivate }}" style="flex:none;font-size:12px">Make active</button></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+  </main>
+</div>
+
+<!-- APPLICATION DIALOG -->
+<sc-if value="{{ appDialogOpen }}" hint-placeholder-val="{{ false }}">
+  <div class="dialog-backdrop" onClick="{{ closeAppDialog }}">
+    <div class="dialog" onClick="{{ stop }}" style="width:min(460px,100%)">
+      <div class="dialog-title">{{ appDialogTitle }}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="field" style="margin:0"><label>Company *</label><input class="input" value="{{ draft.company }}" onInput="{{ onDraftCompany }}"></div>
+        <div class="field" style="margin:0"><label>Role *</label><input class="input" value="{{ draft.role }}" onInput="{{ onDraftRole }}"></div>
+        <div class="field" style="margin:0"><label>Status</label>
+          <select class="input" value="{{ draft.status }}" onChange="{{ onDraftStatus }}">
+            <option value="applied">Applied</option><option value="interviewing">Interviewing</option>
+            <option value="offer">Offer</option><option value="rejected">Rejected</option><option value="accepted">Accepted</option>
+          </select></div>
+        <div class="field" style="margin:0"><label>Applied date</label><input class="input" type="date" value="{{ draft.appliedDate }}" onInput="{{ onDraftDate }}"></div>
+      </div>
+      <div class="field" style="margin:0"><label>Notes</label>{{ notesField }}</div>
+      <sc-if value="{{ appDialogError }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--color-accent-700)">Company and role are required.</div></sc-if>
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" onClick="{{ closeAppDialog }}">Cancel</button>
+        <button class="btn btn-primary" onClick="{{ saveApp }}">Save application</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- DELETE CONFIRM -->
+<sc-if value="{{ deleteOpen }}" hint-placeholder-val="{{ false }}">
+  <div class="dialog-backdrop" onClick="{{ cancelDelete }}">
+    <div class="dialog" onClick="{{ stop }}">
+      <div class="dialog-title">Delete this application?</div>
+      <div class="dialog-body">{{ deleteLabel }} will be removed. This can't be undone.</div>
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" onClick="{{ cancelDelete }}">Cancel</button>
+        <button class="btn btn-primary" onClick="{{ confirmDelete }}" style="color:var(--color-neutral-700);border-color:var(--color-neutral-500)">Delete</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- EVENT DIALOG -->
+<sc-if value="{{ eventOpen }}" hint-placeholder-val="{{ false }}">
+  <div class="dialog-backdrop" onClick="{{ closeEvent }}">
+    <div class="dialog" onClick="{{ stop }}">
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent)">{{ eventTypeLabel }} · {{ eventDueText }}</div>
+      <div class="dialog-title" style="{{ eventStrike }}">{{ eventTitle }}</div>
+      <div class="dialog-body">{{ eventDesc }}<br><br>Estimated {{ eventHours }} of focused work.</div>
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" onClick="{{ snoozeEvent }}">Snooze a day</button>
+        <button class="btn btn-primary" onClick="{{ toggleEventComplete }}">{{ eventCompleteLabel }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- TASK DIALOG -->
+<sc-if value="{{ taskOpen }}" hint-placeholder-val="{{ false }}">
+  <div class="dialog-backdrop" onClick="{{ closeTask }}">
+    <div class="dialog" onClick="{{ stop }}">
+      <div class="dialog-title">Add a prep task</div>
+      <div class="field" style="margin:0"><label>Task</label><input class="input" value="{{ taskDraft.title }}" onInput="{{ onTaskTitle }}" placeholder="e.g. Practice SQL joins"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="field" style="margin:0"><label>Date</label><input class="input" type="date" value="{{ taskDraft.date }}" onInput="{{ onTaskDate }}"></div>
+        <div class="field" style="margin:0"><label>Hours</label><input class="input" type="number" min="0.5" step="0.5" value="{{ taskDraft.hours }}" onInput="{{ onTaskHours }}"></div>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" onClick="{{ closeTask }}">Cancel</button>
+        <button class="btn btn-primary" onClick="{{ saveTask }}">Add task</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- FLASH -->
+<sc-if value="{{ flash }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1815;color:#f4efe6;padding:12px 22px;border-radius:var(--radius-md);box-shadow:var(--shadow-lg);font-size:13.5px;font-family:var(--font-heading);font-weight:600;display:flex;align-items:center;gap:10px;z-index:50">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-accent-300)" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>{{ flash }}</div>
+</sc-if>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860}}">
+const RECS = [
+  {id:'r1',company:'Northwind Capital',industry:'Finance',roleTitle:'Quantitative Research Intern',score:88,category:'good_fit',
+   reason:'You match 4 of 5 core skills — Python, Statistics, SQL and Pandas — and your momentum-backtesting project maps directly to the desk\u2019s work.',
+   skills:['Python','Statistics','SQL','R','Pandas'],location:'New York, NY',salary:{min:9000,max:11000,unit:'/mo'},posted:'2026-07-11',deadline:'2026-08-08',
+   description:'The Quantitative Research team builds and tests systematic trading signals across equities and futures. As an intern you will prototype factor models in Python, run historical backtests, and present findings to portfolio managers. Strong grounding in statistics and comfort with large datasets expected; prior exposure to time-series analysis is a plus.'},
+  {id:'r2',company:'Helios Bio',industry:'Biotech',roleTitle:'Computational Biology Intern',score:82,category:'good_fit',
+   reason:'Your Python and ML skills cover the core stack; the genomics pipeline experience would be new but adjacent to your data-science background.',
+   skills:['Python','Genomics','Machine Learning','Linux'],location:'Boston, MA',salary:{min:7500,max:8500,unit:'/mo'},posted:'2026-07-09',deadline:'2026-08-01',
+   description:'Join a wet-lab-adjacent computational team analysing single-cell sequencing data. You will build reproducible analysis pipelines, apply clustering and dimensionality-reduction methods, and help interpret results alongside biologists. Comfort in a Unix environment and with large numerical datasets is essential.'},
+  {id:'r3',company:'Meridian Design Co.',industry:'Design',roleTitle:'Product Design Intern',score:79,category:'good_fit',
+   reason:'Your portfolio site and front-end work show real craft; you\u2019d ramp on formal UX research, which the role provides mentoring for.',
+   skills:['Figma','Prototyping','UX Research','HTML/CSS'],location:'Remote',salary:{min:5000,max:6000,unit:'/mo'},posted:'2026-07-05',deadline:'2026-07-30',
+   description:'Work with a small product team shipping a B2B analytics tool. You will move from wireframes to high-fidelity prototypes in Figma, run lightweight usability sessions, and hand off specs to engineers. We look for taste, curiosity, and an ability to defend design decisions with evidence.'},
+  {id:'r4',company:'Atlas Logistics',industry:'Operations',roleTitle:'Data Analyst Intern',score:76,category:'good_fit',
+   reason:'SQL, Excel and Tableau are all on your résumé — a comfortable fit with room to grow into forecasting work.',
+   skills:['SQL','Excel','Tableau','Python'],location:'Chicago, IL',salary:{min:5500,max:6500,unit:'/mo'},posted:'2026-07-12',deadline:'2026-08-12',
+   description:'The analytics group turns fleet and warehouse data into operational decisions. You will write SQL against a large warehouse, build Tableau dashboards for regional managers, and support ad-hoc forecasting requests. A pragmatic, detail-oriented approach matters more than exotic tooling.'},
+  {id:'r5',company:'Vireo Media',industry:'Journalism',roleTitle:'Editorial Data Intern',score:68,category:'stretch',
+   reason:'Your analytical background transfers, but newsroom tooling and CMS workflows would be a step outside your usual stack.',
+   skills:['Writing','Research','SQL','Data Viz'],location:'Remote',salary:{min:3500,max:4500,unit:'/mo'},posted:'2026-07-03',deadline:'2026-07-28',
+   description:'A digital newsroom seeks an intern to support data-driven reporting. You will clean public datasets, build charts for stories, and work with reporters on interactive graphics. Curiosity about the news and clear written communication are as important as technical skill.'},
+  {id:'r6',company:'Cobalt Robotics',industry:'Hardware',roleTitle:'Embedded Systems Intern',score:64,category:'stretch',
+   reason:'Python overlaps, but the role leans on C++ and RTOS experience you haven\u2019t logged yet — a genuine stretch worth the reach.',
+   skills:['C++','RTOS','Electronics','Python'],location:'Austin, TX',salary:{min:6000,max:7000,unit:'/mo'},posted:'2026-06-30',deadline:'2026-07-25',
+   description:'Help bring autonomous security robots to life. You will write firmware for motor and sensor subsystems, debug on real hardware, and contribute to the control loop. Experience with C/C++ on microcontrollers strongly preferred; a willingness to get hands dirty is required.'},
+  {id:'r7',company:'Summit Consulting',industry:'Consulting',roleTitle:'Strategy Analyst Intern',score:58,category:'stretch',
+   reason:'Your quantitative rigour is a plus, though the role weighs client communication and slide-craft heavily — areas to develop.',
+   skills:['Excel','PowerPoint','Modeling','Communication'],location:'San Francisco, CA',salary:{min:7000,max:8000,unit:'/mo'},posted:'2026-07-01',deadline:'2026-08-05',
+   description:'Support case teams solving growth and operations problems for mid-market clients. You will build financial models, structure analyses, and craft client-ready presentations. We value structured thinking and the poise to present to senior stakeholders.'},
+  {id:'r8',company:'Aperture AI',industry:'Artificial Intelligence',roleTitle:'ML Research Intern',score:47,category:'long_shot',
+   reason:'A reach role: it expects graduate-level familiarity with PyTorch internals and CUDA that goes beyond your current coursework.',
+   skills:['PyTorch','Deep Learning','Mathematics','CUDA'],location:'Remote',salary:{min:8000,max:10000,unit:'/mo'},posted:'2026-06-28',deadline:'2026-07-22',
+   description:'Contribute to research on efficient transformer training. You will run experiments, implement paper methods in PyTorch, and profile GPU workloads. Prior research experience and strong mathematical maturity are expected — ambitious applicants welcome.'},
+  {id:'r9',company:'Lumen Architecture',industry:'Architecture',roleTitle:'Computational Design Intern',score:41,category:'long_shot',
+   reason:'An interest-led reach: the parametric-design tooling (Rhino, Grasshopper) is entirely new territory for you.',
+   skills:['Rhino','Grasshopper','Rendering','GIS'],location:'Seattle, WA',salary:{min:3000,max:4000,unit:'/mo'},posted:'2026-06-25',deadline:'2026-07-20',
+   description:'A design studio explores generative approaches to urban form. You will script parametric models in Grasshopper, produce renderings, and support GIS-based site analysis. A design sensibility and eagerness to learn new tools matter most.'},
+];
+
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const STATUS = {
+  applied:{label:'Applied',cls:'tag tag-neutral'},
+  interviewing:{label:'Interviewing',cls:'tag tag-accent'},
+  offer:{label:'Offer',cls:'tag tag-accent-2'},
+  accepted:{label:'Accepted',cls:'tag tag-accent'},
+  rejected:{label:'Rejected',cls:'tag tag-outline'},
+  declined:{label:'Declined',cls:'tag tag-outline'},
+};
+
+class Component extends DCLogic {
+  state = {
+    authed:false, authMode:'login', view:'dashboard',
+    findTab:'good_fit',
+    filters:{location:'',skill:'',company:'',sort:'score'},
+    expandedRec:null,
+    apps:[
+      {id:'a1',company:'Northwind Capital',role:'Quantitative Research Intern',status:'interviewing',appliedDate:'2026-06-28',notes:'Passed the online assessment. First-round with a quant researcher on the 24th — brushing up on probability puzzles.',interviews:['Jul 24, 2026 — Technical round'],updated:'2026-07-15'},
+      {id:'a2',company:'Helios Bio',role:'Computational Biology Intern',status:'applied',appliedDate:'2026-07-05',notes:'Applied through their careers page. Referred by a lab TA.',interviews:[],updated:'2026-07-05'},
+      {id:'a3',company:'Meridian Design Co.',role:'Product Design Intern',status:'offer',appliedDate:'2026-06-10',notes:'Verbal offer received — $5.5k/mo, remote. Deciding by the 25th.',interviews:['Jun 20 — Portfolio review','Jun 27 — Team fit'],updated:'2026-07-14'},
+      {id:'a4',company:'Vireo Media',role:'Editorial Data Intern',status:'rejected',appliedDate:'2026-05-30',notes:'Rejected after the first round. Feedback: wanted stronger newsroom examples. Worth building a data-story sample.',interviews:['Jun 12 — Editor screen'],updated:'2026-06-18'},
+      {id:'a5',company:'Atlas Logistics',role:'Data Analyst Intern',status:'applied',appliedDate:'2026-07-12',notes:'Straightforward application. Tailored résumé to emphasise Tableau work.',interviews:[],updated:'2026-07-12'},
+    ],
+    appFilter:'all', appSort:'date', expandedApp:null,
+    appDialog:{open:false,mode:'add',id:null,error:false},
+    draft:{company:'',role:'',status:'applied',appliedDate:'2026-07-19',notes:''},
+    deleteId:null,
+    calDate:new Date(2026,6,19), calView:'monthly',
+    events:[
+      {id:'e1',title:'Review data structures',type:'general',date:'2026-07-14',hours:2,completed:true},
+      {id:'e2',title:'Practice coding problems',type:'interview',date:'2026-07-16',hours:3,completed:true},
+      {id:'e3',title:'Read a system-design primer',type:'general',date:'2026-07-18',hours:1.5,completed:true},
+      {id:'e4',title:'Mock behavioural interview',type:'interview',date:'2026-07-20',hours:2,completed:false},
+      {id:'e5',title:'SQL window functions',type:'interview',date:'2026-07-21',hours:2,completed:false},
+      {id:'e6',title:'Coffee chat — Northwind analyst',type:'custom',date:'2026-07-23',hours:1,completed:false},
+      {id:'e7',title:'System design: rate limiter',type:'interview',date:'2026-07-24',hours:3,completed:false},
+      {id:'e8',title:'Northwind onsite prep',type:'interview',date:'2026-07-24',hours:2,completed:false},
+      {id:'e9',title:'Practice coding problems',type:'general',date:'2026-07-27',hours:2,completed:false},
+      {id:'e10',title:'Update portfolio site',type:'custom',date:'2026-07-30',hours:2,completed:false},
+    ],
+    eventId:null,
+    task:{open:false,title:'',date:'2026-07-22',hours:2},
+    resumes:[
+      {id:'v3',name:'Spandan_Resume_2026.pdf',uploaded:'2026-07-08',active:true,
+        skills:['Python','SQL','Statistics','Pandas','R','Git','Tableau'],interests:['Data Science','Machine Learning','Backend','Quant Finance']},
+      {id:'v2',name:'Resume_Spring2026.pdf',uploaded:'2026-03-14',active:false,skills:[],interests:[]},
+      {id:'v1',name:'Resume_v1.pdf',uploaded:'2026-01-20',active:false,skills:[],interests:[]},
+    ],
+    flash:null,
+    showcaseScene:0,
+  };
+  _flashT = null;
+  _showcaseT = null;
+
+  componentDidMount(){
+    this._showcaseT = setInterval(()=>{
+      if(this.state.authed) return;
+      this.setState(s=>({showcaseScene:(s.showcaseScene+1)%3}));
+    }, 3600);
+    this._io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.setAttribute('data-in','1'); this._io.unobserve(e.target); } });
+    }, {threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+    setTimeout(()=>this._observe(), 80);
+  }
+  componentDidUpdate(){ this._observe(); }
+  _observe(){ if(!this._io) return; document.querySelectorAll('.fw-reveal:not([data-obs])').forEach(el=>{ el.setAttribute('data-obs','1'); this._io.observe(el); }); }
+  componentWillUnmount(){ if(this._showcaseT) clearInterval(this._showcaseT); if(this._flashT) clearTimeout(this._flashT); if(this._io) this._io.disconnect(); }
+  setScene(i){ this.setState({showcaseScene:i}); }
+
+  nav(view){ this.setState({view, appDialog:{open:false}, deleteId:null, eventId:null, task:{...this.state.task,open:false}}); }
+  flash(msg){ if(this._flashT) clearTimeout(this._flashT);
+    this.setState({flash:msg}); this._flashT=setTimeout(()=>this.setState({flash:null}),2600); }
+
+  // formatting
+  fmt(d){ const x=new Date(d+'T00:00:00'); return `${MON[x.getMonth()]} ${x.getDate()}, ${x.getFullYear()}`; }
+  rel(d){ const x=new Date(d+'T00:00:00'), now=new Date(2026,6,19);
+    const days=Math.round((now-x)/86400000);
+    if(days<=0) return 'today'; if(days<7) return days+'d ago';
+    if(days<30) return Math.floor(days/7)+'w ago'; return Math.floor(days/30)+'mo ago'; }
+  salaryText(s){ if(!s) return 'Not disclosed';
+    return `$${(s.min/1000)}k\u2013${(s.max/1000)}k${s.unit||''}`; }
+
+  render_recs(){
+    const f=this.state.filters;
+    let list=RECS.filter(r=>r.category===this.state.findTab);
+    list=list.filter(r=>
+      (!f.location||r.location===f.location)&&
+      (!f.skill||r.skills.includes(f.skill))&&
+      (!f.company||r.company.toLowerCase().includes(f.company.toLowerCase())));
+    list.sort((a,b)=>{
+      if(f.sort==='date') return new Date(b.posted)-new Date(a.posted);
+      if(f.sort==='salary') return (b.salary?.max||0)-(a.salary?.max||0);
+      if(f.sort==='company') return a.company.localeCompare(b.company);
+      return b.score-a.score; });
+    const loggedKeys=new Set(this.state.apps.map(a=>a.company+'|'+a.role));
+    return list.map(r=>{
+      const logged=loggedKeys.has(r.company+'|'+r.roleTitle);
+      const sc = r.score>=75?'var(--color-accent-700)':r.score>=50?'var(--color-neutral-700)':'var(--color-neutral-500)';
+      return {...r, expanded:this.state.expandedRec===r.id,
+        scoreColor:sc,
+        salaryText:this.salaryText(r.salary),
+        postedText:this.rel(r.posted), deadlineText:this.fmt(r.deadline),
+        toggleLabel:this.state.expandedRec===r.id?'Hide posting':'View posting',
+        logLabel:logged?'Logged \u2713':'Log application',
+        onToggle:()=>this.setState({expandedRec:this.state.expandedRec===r.id?null:r.id}),
+        onLog:()=>this.logApp(r)};
+    });
+  }
+  logApp(r){
+    if(this.state.apps.some(a=>a.company===r.company&&a.role===r.roleTitle)){ this.flash('Already in your tracker'); return; }
+    const app={id:'a'+Date.now(),company:r.company,role:r.roleTitle,status:'applied',
+      appliedDate:'2026-07-19',notes:'Logged from a recommendation.',interviews:[],updated:'2026-07-19'};
+    this.setState({apps:[app,...this.state.apps]});
+    this.flash(`Logged ${r.company} \u2014 ${r.roleTitle}`);
+  }
+
+  render_apps(){
+    let list=this.state.apps.filter(a=>this.state.appFilter==='all'||a.status===this.state.appFilter);
+    list=[...list].sort((a,b)=>{
+      if(this.state.appSort==='company') return a.company.localeCompare(b.company);
+      if(this.state.appSort==='status') return a.status.localeCompare(b.status);
+      return new Date(b.appliedDate)-new Date(a.appliedDate); });
+    return list.map(a=>{
+      const st=STATUS[a.status]||{label:a.status,cls:'tag tag-neutral'};
+      return {...a, expanded:this.state.expandedApp===a.id,
+        caretRotate:this.state.expandedApp===a.id?'rotate(90deg)':'none',
+        statusClass:st.cls, statusLabel:st.label,
+        appliedText:this.fmt(a.appliedDate), relText:this.rel(a.appliedDate),
+        updatedText:this.fmt(a.updated),
+        notes:a.notes||'No notes yet.',
+        interviewText:a.interviews.length?a.interviews.join(' · '):'No interviews logged.',
+        onToggle:()=>this.setState({expandedApp:this.state.expandedApp===a.id?null:a.id}),
+        onEdit:()=>this.openEdit(a),
+        onDelete:()=>this.setState({deleteId:a.id})};
+    });
+  }
+  openAddApp(){ this._pendingNotes=''; this.setState({appDialog:{open:true,mode:'add',id:null,error:false},
+    draft:{company:'',role:'',status:'applied',appliedDate:'2026-07-19',notes:''}}); }
+  openEdit(a){ this._pendingNotes=a.notes||''; this.setState({appDialog:{open:true,mode:'edit',id:a.id,error:false},
+    draft:{company:a.company,role:a.role,status:a.status,appliedDate:a.appliedDate,notes:a.notes}}); }
+  saveApp(){
+    const d=this.state.draft;
+    if(!d.company.trim()||!d.role.trim()){ this.setState({appDialog:{...this.state.appDialog,error:true}}); return; }
+    if(this.state.appDialog.mode==='add'){
+      const app={id:'a'+Date.now(),...d,interviews:[],updated:'2026-07-19'};
+      this.setState({apps:[app,...this.state.apps],appDialog:{open:false}}); this.flash('Application saved');
+    } else {
+      this.setState({apps:this.state.apps.map(a=>a.id===this.state.appDialog.id?{...a,...d,updated:'2026-07-19'}:a),
+        appDialog:{open:false}}); this.flash('Application updated');
+    }
+  }
+  confirmDelete(){ const id=this.state.deleteId;
+    this.setState({apps:this.state.apps.filter(a=>a.id!==id),deleteId:null}); this.flash('Application deleted'); }
+
+  eventsFor(dateKey){ return this.state.events.filter(e=>e.date===dateKey); }
+  chip(e){ const accent=e.type==='interview'?'var(--color-accent)':e.type==='general'?'var(--color-neutral-500)':'var(--color-accent-300)';
+    const bg=e.type==='interview'?'color-mix(in srgb,var(--color-accent) 12%,transparent)':e.type==='general'?'var(--color-surface)':'transparent';
+    return {...e, accent, chipBg:bg, strike:e.completed?'text-decoration:line-through;opacity:.55':'',
+      onOpen:()=>this.setState({eventId:e.id})}; }
+
+  render_calWeeks(){
+    const d=this.state.calDate, y=d.getFullYear(), m=d.getMonth();
+    const start=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+    const todayKey='2026-07-19';
+    const cells=[];
+    for(let i=0;i<start;i++) cells.push({empty:true});
+    for(let day=1;day<=days;day++){
+      const key=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const evs=this.eventsFor(key);
+      const isToday=key===todayKey;
+      cells.push({day, key, isToday,
+        bg:isToday?'color-mix(in srgb,var(--color-accent) 6%,transparent)':'var(--color-bg)',
+        dayColor:isToday?'var(--color-accent)':'var(--color-text)',
+        events:evs.slice(0,2).map(e=>this.chip(e)),
+        hasMore:evs.length>2, moreLabel:`+${evs.length-2} more`});
+    }
+    while(cells.length%7!==0) cells.push({empty:true});
+    // fill empties with plain bg
+    cells.forEach(c=>{ if(c.empty){c.day='';c.bg='var(--color-surface)';c.dayColor='var(--color-text)';c.events=[];c.hasMore=false;} });
+    const weeks=[]; for(let i=0;i<cells.length;i+=7) weeks.push(cells.slice(i,i+7));
+    return weeks;
+  }
+  render_weekCells(){
+    const d=new Date(this.state.calDate); const dow=d.getDay();
+    const monday=new Date(d); monday.setDate(d.getDate()-((dow+6)%7));
+    const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const todayKey='2026-07-19';
+    return [...Array(7)].map((_,i)=>{
+      const cd=new Date(monday); cd.setDate(monday.getDate()+i);
+      const key=`${cd.getFullYear()}-${String(cd.getMonth()+1).padStart(2,'0')}-${String(cd.getDate()).padStart(2,'0')}`;
+      const evs=this.eventsFor(key);
+      const isToday=key===todayKey;
+      const hrs=evs.reduce((s,e)=>s+e.hours,0);
+      return {wd:names[i], day:cd.getDate(), isToday,
+        bg:isToday?'color-mix(in srgb,var(--color-accent) 6%,transparent)':'var(--color-bg)',
+        dayColor:isToday?'var(--color-accent)':'var(--color-text)',
+        events:evs.map(e=>this.chip(e)), hours:hrs?hrs+'h':'—'};
+    });
+  }
+  render_weekTotal(){ return this.render_weekCells().reduce((s,c)=>s+(c.events.reduce((t,e)=>t+e.hours,0)),0); }
+  render_listEvents(){
+    return [...this.state.events].sort((a,b)=>new Date(a.date)-new Date(b.date)).map(e=>{
+      const tc=e.type==='interview'?'tag tag-accent':e.type==='general'?'tag tag-neutral':'tag tag-outline';
+      return {...e, completed:e.completed, strike:e.completed?'text-decoration:line-through;opacity:.55':'',
+        dueText:this.fmt(e.date), typeClass:tc,
+        typeLabel:e.type==='interview'?'Interview':e.type==='general'?'General':'Custom',
+        hours:e.hours+'h',
+        onOpen:()=>this.setState({eventId:e.id}),
+        onToggle:()=>this.toggleEvent(e.id)};
+    });
+  }
+  toggleEvent(id){ this.setState({events:this.state.events.map(e=>e.id===id?{...e,completed:!e.completed}:e)}); }
+  snoozeEvent(){ const id=this.state.eventId;
+    this.setState({events:this.state.events.map(e=>{ if(e.id!==id) return e;
+      const nd=new Date(e.date+'T00:00:00'); nd.setDate(nd.getDate()+1);
+      return {...e,date:`${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,'0')}-${String(nd.getDate()).padStart(2,'0')}`};}),
+      eventId:null}); this.flash('Snoozed to the next day'); }
+  saveTask(){ const t=this.state.task; if(!t.title.trim()) return;
+    const ev={id:'e'+Date.now(),title:t.title,type:'custom',date:t.date,hours:parseFloat(t.hours)||1,completed:false};
+    this.setState({events:[...this.state.events,ev],task:{...t,open:false,title:''}}); this.flash('Task added'); }
+
+  renderVals(){
+    const s=this.state, v=s.view;
+    const cats=RECS.reduce((o,r)=>{o[r.category]=(o[r.category]||0)+1;return o;},{});
+    const activeR=s.resumes.find(r=>r.active)||s.resumes[0];
+    const upcomingInterviews=s.apps.filter(a=>a.status==='interviewing').length;
+    const wk=this.render_weekCells();
+    const weekTotal=this.render_weekTotal();
+    const intensity=weekTotal<5?'Light':weekTotal<12?'Moderate':weekTotal<20?'Heavy':'Intensive';
+    const ev=s.events.find(e=>e.id===s.eventId);
+    const delApp=s.apps.find(a=>a.id===s.deleteId);
+    return {
+      isLogin:!s.authed, isAuthed:s.authed, isSignup:s.authMode==='signup',
+      authKicker:s.authMode==='signup'?'Create your account':'Welcome back',
+      authTitle:s.authMode==='signup'?'Start your season':'Sign in to Fieldwork',
+      authSub:s.authMode==='signup'?'One place for discovery, tracking and prep.':'Pick up where you left off.',
+      authCta:s.authMode==='signup'?'Create account':'Sign in',
+      authSwitchText:s.authMode==='signup'?'Already have an account?':'New to Fieldwork?',
+      authSwitchLink:s.authMode==='signup'?'Sign in':'Create one',
+      onLogin:(e)=>{e.preventDefault();this.setState({authed:true,view:'dashboard'});},
+      onToggleAuth:(e)=>{e.preventDefault();this.setState({authMode:s.authMode==='signup'?'login':'signup'});},
+      onLogout:()=>this.setState({authed:false}),
+
+      // login showcase
+      scene0:s.showcaseScene===0, scene1:s.showcaseScene===1, scene2:s.showcaseScene===2,
+      showcaseCaption:['Matching roles to your résumé','Tracking every application','Prep timed to your interviews'][s.showcaseScene],
+      setScene0:()=>this.setScene(0), setScene1:()=>this.setScene(1), setScene2:()=>this.setScene(2),
+      goSignup:()=>this.setState({authMode:'signup'}),
+      prepBarsLight:[
+        {label:'M',h:'40%',color:'var(--color-neutral-400)',labelColor:'color-mix(in srgb,var(--color-text) 55%,transparent)',delay:'.1s'},
+        {label:'T',h:'62%',color:'var(--color-accent)',labelColor:'color-mix(in srgb,var(--color-text) 55%,transparent)',delay:'.18s'},
+        {label:'W',h:'28%',color:'var(--color-neutral-400)',labelColor:'color-mix(in srgb,var(--color-text) 55%,transparent)',delay:'.26s'},
+        {label:'T',h:'92%',color:'var(--color-accent)',labelColor:'var(--color-accent-700)',delay:'.34s'},
+        {label:'F',h:'54%',color:'var(--color-accent)',labelColor:'color-mix(in srgb,var(--color-text) 55%,transparent)',delay:'.42s'},
+        {label:'S',h:'18%',color:'var(--color-neutral-300)',labelColor:'color-mix(in srgb,var(--color-text) 40%,transparent)',delay:'.5s'},
+        {label:'S',h:'12%',color:'var(--color-neutral-300)',labelColor:'color-mix(in srgb,var(--color-text) 40%,transparent)',delay:'.58s'},
+      ],
+      ind0Color:s.showcaseScene===0?'var(--color-accent-300)':'#6b6459',
+      ind1Color:s.showcaseScene===1?'var(--color-accent-300)':'#6b6459',
+      ind2Color:s.showcaseScene===2?'var(--color-accent-300)':'#6b6459',
+      prepBars:[
+        {label:'M',h:'40%',color:'var(--color-neutral-500)',labelColor:'#8a8175',delay:'.05s'},
+        {label:'T',h:'62%',color:'var(--color-accent)',labelColor:'#8a8175',delay:'.13s'},
+        {label:'W',h:'28%',color:'var(--color-neutral-500)',labelColor:'#8a8175',delay:'.21s'},
+        {label:'T',h:'92%',color:'var(--color-accent)',labelColor:'var(--color-accent-300)',delay:'.29s'},
+        {label:'F',h:'54%',color:'var(--color-accent)',labelColor:'#8a8175',delay:'.37s'},
+        {label:'S',h:'18%',color:'rgba(255,255,255,.14)',labelColor:'#6b6459',delay:'.45s'},
+        {label:'S',h:'12%',color:'rgba(255,255,255,.14)',labelColor:'#6b6459',delay:'.53s'},
+      ],
+
+      mainPad:'40px 48px',
+      navDash:String(v==='dashboard'), navFind:String(v==='find'), navApps:String(v==='applications'),
+      navCal:String(v==='calendar'), navResume:String(v==='resume'),
+      goDash:()=>this.nav('dashboard'), goFind:()=>this.nav('find'),
+      goApps:()=>this.nav('applications'), goCal:()=>this.nav('calendar'),
+      goResume:()=>this.nav('resume'),
+      isDash:v==='dashboard', isFind:v==='find', isApps:v==='applications', isCal:v==='calendar', isResume:v==='resume',
+
+      // dashboard
+      todayLabel:'Sunday, July 19',
+      upcomingInterviewCount:upcomingInterviews, prepThisWeek:weekTotal,
+      statApps:s.apps.length, statInterviews:upcomingInterviews,
+      statGoodFit:cats.good_fit||0, statOffers:s.apps.filter(a=>a.status==='offer').length,
+      resumeCount:s.resumes.length,
+      agenda:[
+        {day:'20',mon:'Jul',title:'Mock behavioural interview',sub:'2h · interview prep'},
+        {day:'24',mon:'Jul',title:'Northwind Capital — technical round',sub:'Interview · 10:00 AM'},
+        {day:'25',mon:'Jul',title:'Meridian offer decision due',sub:'Respond by end of day'},
+        {day:'28',mon:'Jul',title:'System design: rate limiter',sub:'3h · interview prep'},
+      ],
+
+      // find
+      findTab:s.findTab, tabGood:String(s.findTab==='good_fit'), tabStretch:String(s.findTab==='stretch'), tabLong:String(s.findTab==='long_shot'),
+      goodFitCount:cats.good_fit||0, stretchCount:cats.stretch||0, longShotCount:cats.long_shot||0,
+      setTabGood:()=>this.setState({findTab:'good_fit',expandedRec:null}),
+      setTabStretch:()=>this.setState({findTab:'stretch',expandedRec:null}),
+      setTabLong:()=>this.setState({findTab:'long_shot',expandedRec:null}),
+      filters:s.filters,
+      locationOptions:[...new Set(RECS.map(r=>r.location))].sort(),
+      skillOptions:[...new Set(RECS.flatMap(r=>r.skills))].sort(),
+      onFilterLocation:(e)=>this.setState({filters:{...s.filters,location:e.target.value}}),
+      onFilterSkill:(e)=>this.setState({filters:{...s.filters,skill:e.target.value}}),
+      onFilterCompany:(e)=>this.setState({filters:{...s.filters,company:e.target.value}}),
+      onFilterSort:(e)=>this.setState({filters:{...s.filters,sort:e.target.value}}),
+      recs:this.render_recs(), noRecs:this.render_recs().length===0,
+
+      // applications
+      apps:this.render_apps(), noApps:this.render_apps().length===0,
+      appCountLabel:`${s.apps.length} tracked · ${upcomingInterviews} in interviews · ${s.apps.filter(a=>a.status==='offer').length} offer`,
+      appFilter:s.appFilter, appSort:s.appSort,
+      onAppFilter:(e)=>this.setState({appFilter:e.target.value}),
+      onAppSort:(e)=>this.setState({appSort:e.target.value}),
+      openAddApp:()=>this.openAddApp(),
+      appDialogOpen:s.appDialog.open, appDialogError:s.appDialog.error,
+      appDialogTitle:s.appDialog.mode==='edit'?'Edit application':'Log an application',
+      draft:s.draft,
+      notesField:React.createElement('textarea',{className:'input',value:s.draft.notes||'',
+        onChange:(e)=>this.setState({draft:{...this.state.draft,notes:e.target.value}}),
+        style:{minHeight:'90px',resize:'vertical'}}),
+      onDraftCompany:(e)=>this.setState({draft:{...s.draft,company:e.target.value}}),
+      onDraftRole:(e)=>this.setState({draft:{...s.draft,role:e.target.value}}),
+      onDraftStatus:(e)=>this.setState({draft:{...s.draft,status:e.target.value}}),
+      onDraftDate:(e)=>this.setState({draft:{...s.draft,appliedDate:e.target.value}}),
+      onDraftNotes:(e)=>this.setState({draft:{...s.draft,notes:e.target.value}}),
+      closeAppDialog:()=>this.setState({appDialog:{open:false}}),
+      saveApp:()=>this.saveApp(),
+      deleteOpen:!!s.deleteId, deleteLabel:delApp?`${delApp.company} — ${delApp.role}`:'',
+      cancelDelete:()=>this.setState({deleteId:null}), confirmDelete:()=>this.confirmDelete(),
+
+      // calendar
+      calLabel:`${MONTHS[s.calDate.getMonth()]} ${s.calDate.getFullYear()}`,
+      calMonthly:s.calView==='monthly', calWeekly:s.calView==='weekly', calList:s.calView==='list',
+      setCalMonthly:()=>this.setState({calView:'monthly'}), setCalWeekly:()=>this.setState({calView:'weekly'}), setCalListView:()=>this.setState({calView:'list'}),
+      calPrev:()=>this.setState({calDate:new Date(s.calDate.getFullYear(),s.calDate.getMonth()-1,1)}),
+      calNext:()=>this.setState({calDate:new Date(s.calDate.getFullYear(),s.calDate.getMonth()+1,1)}),
+      weekdayNames:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+      calWeeks:this.render_calWeeks(),
+      weekCells:wk, weekTotalLabel:weekTotal+'h scheduled', intensityLabel:intensity+' week',
+      intensityPct:Math.min(weekTotal/25*100,100)+'%',
+      listEvents:this.render_listEvents(),
+      openAddTask:()=>this.setState({task:{...s.task,open:true}}),
+      taskOpen:s.task.open, taskDraft:s.task,
+      onTaskTitle:(e)=>this.setState({task:{...s.task,title:e.target.value}}),
+      onTaskDate:(e)=>this.setState({task:{...s.task,date:e.target.value}}),
+      onTaskHours:(e)=>this.setState({task:{...s.task,hours:e.target.value}}),
+      closeTask:()=>this.setState({task:{...s.task,open:false}}),
+      saveTask:()=>this.saveTask(),
+      eventOpen:!!ev,
+      eventTitle:ev?ev.title:'', eventTypeLabel:ev?(ev.type==='interview'?'Interview prep':ev.type==='general'?'General prep':'Custom task'):'',
+      eventDueText:ev?this.fmt(ev.date):'', eventDesc:ev?(ev.type==='interview'?'Timed against an upcoming interview in your tracker.':ev.type==='general'?'Part of your rolling maintenance schedule.':'A task you added yourself.'):'',
+      eventHours:ev?ev.hours+'h':'', eventStrike:ev&&ev.completed?'text-decoration:line-through;opacity:.6':'',
+      eventCompleteLabel:ev&&ev.completed?'Mark not done':'Mark complete',
+      closeEvent:()=>this.setState({eventId:null}),
+      toggleEventComplete:()=>{this.toggleEvent(s.eventId);this.setState({eventId:null});},
+      snoozeEvent:()=>this.snoozeEvent(),
+
+      // resume
+      activeResume:{...activeR, uploadedText:this.fmt(activeR.uploaded)},
+      resumeVersions:s.resumes.map(r=>({...r, uploadedText:'Uploaded '+this.fmt(r.uploaded),
+        isActive:r.active, notActive:!r.active,
+        borderColor:r.active?'var(--color-accent)':'var(--color-divider)',
+        onActivate:()=>{this.setState({resumes:s.resumes.map(x=>({...x,active:x.id===r.id}))});this.flash('Active résumé switched — recommendations refreshed');}})),
+      onUpload:()=>{const nid='v'+Date.now();
+        this.setState({resumes:[{id:nid,name:'Spandan_Resume_July2026.pdf',uploaded:'2026-07-19',active:true,
+          skills:activeR.skills,interests:activeR.interests},...s.resumes.map(x=>({...x,active:false}))]});
+        this.flash('Résumé uploaded and set active');},
+
+      stop:(e)=>e.stopPropagation(),
+      flash:s.flash,
+    };
+  }
+}
+</script>
+</body>
+</html>

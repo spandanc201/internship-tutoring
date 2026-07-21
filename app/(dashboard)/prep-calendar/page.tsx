@@ -85,7 +85,7 @@ export default function PrepCalendarPage() {
   }
 
   useEffect(() => {
-    fetchEvents()
+    void fetchEvents()
   }, [])
 
   const eventsFor = (key: string) => events.filter((e) => dayKey(e.dueDate) === key)

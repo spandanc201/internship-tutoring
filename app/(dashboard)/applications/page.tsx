@@ -70,7 +70,7 @@ export default function ApplicationsPage() {
   }
 
   useEffect(() => {
-    fetchApps()
+    void fetchApps()
   }, [])
 
   const list = apps

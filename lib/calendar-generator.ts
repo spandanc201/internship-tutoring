@@ -376,7 +376,6 @@ export function createGeneralPrepCalendar(): GeneratedTask[] {
   const generatedTasks: GeneratedTask[] = []
   const today = new Date()
 
-  let taskId = 1
   for (const monthTheme of GENERAL_PREP_THEMES) {
     // Schedule relative to today so no task is due in the past
     const monthStart = new Date(today)
@@ -396,7 +395,6 @@ export function createGeneralPrepCalendar(): GeneratedTask[] {
         eventType: 'general',
         category: monthTheme.theme.toLowerCase().replace(/ /g, '-'),
       })
-      taskId++
     }
   }
 

@@ -5,6 +5,11 @@ import { MapPin, Banknote, Clock, Plus } from 'lucide-react'
 import { useFlash } from '@/components/fieldwork/Flash'
 import { fmtDate, relDate, salaryText } from '@/lib/format'
 
+interface SalaryRange {
+  min?: number
+  max?: number
+}
+
 interface Recommendation {
   id: string
   company: string
@@ -13,11 +18,16 @@ interface Recommendation {
   score: number
   reason: string
   location?: string
-  salaryRange?: any
+  salaryRange?: SalaryRange
   requiredSkills: string[]
   postedDate: string
   applicationDeadline?: string
   sourceBoards?: string[]
+}
+
+interface ApplicationSummary {
+  company: string
+  role: string
 }
 
 interface RecommendationsResponse {
@@ -90,7 +100,7 @@ export default function FindInternshipsPage() {
     fetch('/api/applications?limit=100')
       .then((res) => (res.ok ? res.json() : null))
       .then((d) =>
-        setLoggedKeys(new Set((d?.applications ?? []).map((a: any) => `${a.company}|${a.role}`)))
+        setLoggedKeys(new Set((d?.applications ?? []).map((a: ApplicationSummary) => `${a.company}|${a.role}`)))
       )
       .catch(() => {})
   }, [])

@@ -44,7 +44,7 @@ export default function ResumePage() {
   }
 
   useEffect(() => {
-    fetchVersions()
+    void fetchVersions()
     fetch('/api/auth/me')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => setInterests(data?.profile?.interests ?? []))
